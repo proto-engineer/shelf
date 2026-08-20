@@ -1,0 +1,6 @@
+{
+  "projects": { "default": "protoengineer" },
+  "targets": {
+    "protoengineer": { "hosting": { "shelf": ["protoshelf"] } }
+  }
+}

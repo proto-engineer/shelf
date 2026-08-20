@@ -1,0 +1,23 @@
+{
+  "hosting": {
+    "target": "shelf",
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      ".firebaserc",
+      ".gitignore",
+      "catalog.py",
+      "build_seed.py",
+      "README.md",
+      "**/.git/**",
+      "**/__pycache__/**"
+    ],
+    "cleanUrls": true,
+    "headers": [
+      {
+        "source": "assets/**",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+      }
+    ]
+  }
+}
