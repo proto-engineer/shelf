@@ -19,6 +19,7 @@ CATALOG = [
     {
         "slug": "assistants",
         "name": "Assistants",
+        "lad": "As",
         "kind": "Ask anything, get answers",
         "tools": [
             {"name": "ChatGPT", "domain": "chatgpt.com", "free": True, "icon": "openai", "use": "Creativity, writing, everyday help",
@@ -37,6 +38,7 @@ CATALOG = [
     {
         "slug": "coding",
         "name": "Coding",
+        "lad": "Co",
         "kind": "Write and fix code",
         "tools": [
             {"name": "Cline", "domain": "cline.bot", "free": True, "icon": "", "use": "Open-source agent in VS Code", "oss": True},
@@ -59,6 +61,7 @@ CATALOG = [
     {
         "slug": "video",
         "name": "Video & image",
+        "lad": "Vi",
         "kind": "Make pictures and videos",
         "tools": [
             {"name": "Krea", "domain": "krea.ai", "free": True, "icon": "", "use": "Real-time image playground",
@@ -79,6 +82,7 @@ CATALOG = [
     {
         "slug": "voice",
         "name": "Voice & audio",
+        "lad": "Vo",
         "kind": "Make speech and music",
         "tools": [
             {"name": "ElevenLabs", "domain": "elevenlabs.io", "free": True, "icon": "elevenlabs", "use": "Lifelike text to speech",
@@ -98,6 +102,7 @@ CATALOG = [
     {
         "slug": "identity",
         "name": "Identity & KYC",
+        "lad": "KY",
         "kind": "Check someone is a real person",
         "tools": [
             {"name": "Didit", "domain": "didit.me", "free": True, "icon": "", "use": "Free ID verification"},
@@ -113,6 +118,7 @@ CATALOG = [
     {
         "slug": "otp",
         "name": "OTP & messaging",
+        "lad": "OT",
         "kind": "Send OTP codes and SMS",
         "tools": [
             {"name": "Firebase Auth", "domain": "firebase.google.com", "free": False, "icon": "firebase", "use": "Phone OTP login (SMS billed)",
@@ -129,6 +135,7 @@ CATALOG = [
     {
         "slug": "plugins",
         "name": "AI plugins",
+        "lad": "AI",
         "kind": "Extend Claude, ChatGPT and agents",
         "tools": [
             {"name": "MCP Servers", "domain": "modelcontextprotocol.io", "free": True, "icon": "", "use": "The plugin standard for AI apps", "oss": True,
@@ -143,6 +150,7 @@ CATALOG = [
     {
         "slug": "ideas",
         "name": "Ideas",
+        "lad": "Id",
         "kind": "Problems worth building — from real companies only",
         "tools": [
             {"name": "YC Requests", "domain": "ycombinator.com", "free": False, "icon": "ycombinator", "use": "Ideas YC wants built", "href": "https://www.ycombinator.com/rfs"},
@@ -156,6 +164,7 @@ CATALOG = [
     {
         "slug": "programs",
         "name": "Startup programs",
+        "lad": "St",
         "kind": "Free credits and perks for founders",
         "tools": [
             {"name": "AWS Activate", "domain": "aws.amazon.com", "free": True, "icon": "", "use": "AWS cloud credits", "href": "https://aws.amazon.com/startups"},
@@ -184,6 +193,7 @@ CATALOG = [
     {
         "slug": "stack",
         "name": "Builder stack",
+        "lad": "Bu",
         "kind": "What we actually build with",
         "tools": [
             {"name": "GitHub", "domain": "github.com", "free": True, "icon": "github", "use": "Code hosting",
