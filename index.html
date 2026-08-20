@@ -2,76 +2,153 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ProtoShelf: free AI tools, startup credits and builder stack</title>
 <meta name="description" content="A hand-picked shelf of AI tools, startup credits and builder services. Free tiers first, with an open-source alternative for every tool. By Proto.Engineer.">
-<link rel="canonical" href="https://shelf.proto-engineer.com/">
+
+<!-- SITE_URL: the one place the public address of this site is declared.
+     Change these four lines together if you move to a custom domain,
+     and update robots.txt + sitemap.xml to match. -->
+<link rel="canonical" href="https://proto-engineer.github.io/shelf/">
 <meta name="robots" content="index,follow">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ProtoShelf">
 <meta property="og:title" content="ProtoShelf: free AI tools, startup credits and builder stack">
 <meta property="og:description" content="Hand-picked AI tools, startup credits and builder services. Free tiers first, open-source alternatives included.">
-<meta property="og:url" content="https://shelf.proto-engineer.com/">
+<meta property="og:url" content="https://proto-engineer.github.io/shelf/">
 <meta property="og:image" content="https://proto-engineer.github.io/shelf/assets/og-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="ProtoShelf: free AI tools, startup credits and builder stack">
+<meta property="og:image:alt" content="ProtoShelf: free AI tools, startup credits and the builder stack.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ProtoShelf: free AI tools and startup credits">
 <meta name="twitter:description" content="Hand-picked AI tools, startup credits and builder services. Free tiers first, open-source alternatives included.">
 <meta name="twitter:image" content="https://proto-engineer.github.io/shelf/assets/og-card.png">
-<link rel="icon" type="image/png" href="assets/proto-engineer.png">
-<link rel="apple-touch-icon" href="assets/proto-engineer.png">
+
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="assets/favicon.png" sizes="96x96">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#F7F5F0" media="(prefers-color-scheme: light)">
+<meta name="color-scheme" content="light">
+
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","name":"ProtoShelf","url":"https://shelf.proto-engineer.com/","description":"Hand-picked AI tools, startup credits and builder services. Free tiers first, open-source alternatives included.","publisher":{"@type":"Organization","name":"Proto.Engineer","url":"https://www.proto-engineer.com/"}}
+{"@context":"https://schema.org","@type":"WebSite","name":"ProtoShelf","url":"https://proto-engineer.github.io/shelf/","description":"Hand-picked AI tools, startup credits and builder services. Free tiers first, open-source alternatives included.","publisher":{"@type":"Organization","name":"Proto.Engineer","url":"https://www.proto-engineer.com/"}}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.simpleicons.org" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#F7F5F0;
     --tile:#FFFFFF;
     --ink:#1C1712;
-    --muted:#6E6659;
+    /* was #868D96 — failed WCAG AA everywhere (2.6–3.3:1).
+       #5F666F is 5.18:1 on --bg, 5.81:1 on --tile, 4.56:1 on the segment pill. */
+    --muted:#655D50;
     --line:#E7E2D7;
-    --free:#3F7A5C;
+    --line-strong:#CFC7B8;
+    /* was #3F7A5C printed at opacity .72 (2.96:1). Full-strength, darker: 7.3:1 on white. */
+    --free:#2F6047;
     --display:"Bricolage Grotesque",system-ui,sans-serif;
     --ui:"Inter",system-ui,sans-serif;
     --r:18px;
+    --barh:60px;        /* kept in sync with the real sticky-bar height by JS */
+    --tap:24px;         /* WCAG 2.2 AA 2.5.8 minimum target size */
+    color-scheme:light;
   }
   *{box-sizing:border-box}
-  html{scroll-behavior:smooth;scroll-padding-top:76px}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+  html{scroll-behavior:smooth;scroll-padding-top:calc(var(--barh) + 16px)}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);
+    -webkit-font-smoothing:antialiased;
+    overflow-wrap:break-word
+  }
+  html.locked,html.locked body{overflow:hidden}
   a{text-decoration:none;color:inherit}
+  img,svg{max-width:100%}
+
+  .vh{
+    position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;
+    overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0
+  }
+  .skip{
+    position:absolute;left:12px;top:-60px;z-index:60;
+    background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;
+    font-size:.82rem;font-weight:600;transition:top .16s
+  }
+  .skip:focus{top:12px}
 
   .wrap{max-width:1100px;margin:0 auto;padding:0 22px}
 
   /* top bar */
   .bar{
     position:sticky;top:0;z-index:20;
-    background:rgba(247,245,240,.86);backdrop-filter:blur(14px);
+    background:rgba(247,245,240,.86);
+    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
     border-bottom:1px solid var(--line)
+  }
+  /* Safari <18 and any browser without backdrop-filter got a see-through bar
+     with page content reading through it. Fall back to an opaque bar. */
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    .bar{background:#F7F5F0}
+    .ladder{background:#fff}
   }
   .bar-in{
     max-width:1100px;margin:0 auto;padding:0 22px;
-    display:flex;align-items:center;gap:18px;height:60px
+    display:flex;align-items:center;gap:14px;min-height:60px
   }
-  .mark{font-family:var(--display);font-weight:700;font-size:1.15rem;letter-spacing:-.03em;flex:none;margin:0}
+  .mark{font-family:var(--display);font-weight:700;font-size:1.15rem;letter-spacing:-.03em;flex:none}
   .seg{display:flex;flex:none;gap:2px;background:rgba(28,23,18,.06);border-radius:999px;padding:3px}
   .seg button{
     border:0;background:transparent;cursor:pointer;font-family:var(--ui);
-    font-size:.72rem;font-weight:500;color:var(--muted);padding:4px 11px;border-radius:999px;transition:.15s
+    font-size:.72rem;font-weight:500;color:var(--muted);
+    /* was 22px tall — under the 24px WCAG 2.2 AA target minimum */
+    min-height:var(--tap);display:inline-flex;align-items:center;justify-content:center;
+    padding:0 11px;border-radius:999px;transition:background .15s,color .15s
   }
-  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
-  .chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-left:auto}
+  .seg button:hover{color:var(--ink)}
+  .seg button[aria-checked="true"]{background:var(--ink);color:#fff}
+
+  /* search — must not be crushed by the chip rail beside it */
+  .search-wrap{flex:0 1 250px;min-width:172px;position:relative;display:flex}
+  .search{
+    width:100%;
+    border:1px solid var(--line-strong);background:var(--tile);border-radius:999px;
+    font-family:var(--ui);font-size:.78rem;color:var(--ink);
+    min-height:32px;padding:7px 30px 7px 14px;outline-offset:2px
+  }
+  .search::placeholder{color:var(--muted)}
+  .search::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+  .clear{
+    position:absolute;right:5px;top:50%;transform:translateY(-50%);
+    width:26px;height:26px;border:0;border-radius:50%;cursor:pointer;
+    background:transparent;color:var(--muted);font-size:.8rem;line-height:1;display:none;
+    align-items:center;justify-content:center
+  }
+  .clear:hover{color:var(--ink);background:rgba(28,23,18,.06)}
+  .search-wrap.has-value .clear{display:flex}
+
+  /* category chips — a horizontal scroller, so say so */
+  .chips-rail{position:relative;flex:1 1 0;min-width:0;display:flex}
+  .chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;padding:2px 0;width:100%;scroll-snap-type:x proximity}
   .chips::-webkit-scrollbar{display:none}
   .chips a{
     flex:none;font-size:.78rem;font-weight:500;color:var(--muted);
-    padding:6px 12px;border-radius:999px;white-space:nowrap;transition:.18s
+    min-height:var(--tap);display:inline-flex;align-items:center;
+    padding:0 12px;border-radius:999px;white-space:nowrap;
+    transition:background .18s,color .18s;scroll-snap-align:end
   }
   .chips a:hover{color:var(--ink);background:rgba(28,23,18,.05)}
-  .chips a[aria-current="true"]{color:var(--ink);background:rgba(28,23,18,.07)}
+  .chips a[aria-current="true"]{color:var(--ink);background:rgba(28,23,18,.09)}
+  /* fade the cut edge so it reads as "more to the right", not as a clipped bug */
+  .chips-rail::after{
+    content:"";position:absolute;right:0;top:0;bottom:0;width:28px;pointer-events:none;
+    background:linear-gradient(90deg,rgba(247,245,240,0),rgba(247,245,240,.95));
+    opacity:0;transition:opacity .2s
+  }
+  .chips-rail.more::after{opacity:1}
 
   /* featured — our own site (Proto.Engineer paper palette) */
   .hero{margin:34px 0 -14px}
@@ -80,21 +157,12 @@
     background:#F3F0EA;color:#37261E;border:1px solid #DBD5C9;border-radius:var(--r);
     padding:18px 22px;transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s
   }
-  .hero a:hover{transform:translateY(-2px);box-shadow:0 14px 30px -18px rgba(55,38,30,.4)}
-  .hero img{width:42px;height:42px;border-radius:11px;object-fit:contain}
+  .hero a:hover{transform:translateY(-2px);box-shadow:0 14px 30px -18px rgba(55,38,30,.45)}
+  .hero img{width:42px;height:42px;border-radius:11px;object-fit:contain;flex:none}
   .hero .t{display:flex;flex-direction:column;gap:2px;min-width:0}
   .hero .t b{font-family:var(--display);font-size:1.02rem;letter-spacing:-.02em}
-  .hero .t span{font-size:.78rem;opacity:.7}
-  .hero .go{margin-left:auto;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:.75;flex:none}
-
-  /* search */
-  .search{
-    flex:1;min-width:80px;max-width:230px;
-    border:1px solid var(--line);background:var(--tile);border-radius:999px;
-    font-family:var(--ui);font-size:.78rem;color:var(--ink);
-    padding:7px 14px;outline-offset:2px
-  }
-  .search::placeholder{color:var(--muted)}
+  .hero .t span{font-size:.78rem;opacity:.8}
+  .hero .go{margin-left:auto;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:.85;flex:none}
 
   /* category */
   section{padding:52px 0 4px}
@@ -104,12 +172,17 @@
     font-family:var(--display);font-weight:700;
     font-size:clamp(1.6rem,4vw,2.15rem);letter-spacing:-.035em;margin:0;line-height:1
   }
-  .head .rule{flex:1;height:1px;background:var(--line)}
+  .head .rule{flex:1;height:1px;background:var(--line-strong);min-width:12px}
   .head .n{font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
   .kind{margin:8px 0 0;font-size:.87rem;color:var(--muted);font-weight:400}
 
-  /* grid */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px}
+  /* grid — one continuous ramp instead of a 640px cliff.
+     Old code jumped from 5 columns at 640px to 3 columns at 641px. */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(clamp(102px,13vw,150px),1fr));
+    gap:12px
+  }
   .tile{
     position:relative;background:var(--tile);border:1px solid var(--line);
     border-radius:var(--r);padding:22px 14px 16px;
@@ -117,72 +190,96 @@
     transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s,border-color .22s
   }
   .tile:hover,.tile:focus-visible{
-    transform:translateY(-3px);border-color:#D8D2C4;
+    transform:translateY(-3px);border-color:var(--line-strong);
     box-shadow:0 10px 26px -14px rgba(28,23,18,.28)
   }
-  .logo{
-    width:44px;height:44px;object-fit:contain;display:block;
+  /* every brand mark gets the same box, whatever shape it arrives in */
+  .logo,.mono{
+    width:44px;height:44px;flex:none;
     transition:transform .22s cubic-bezier(.2,.7,.3,1)
   }
-  .tile:hover .logo{transform:scale(1.06)}
+  .logo{object-fit:contain;display:block}
+  .tile:hover .logo,.tile:hover .mono{transform:scale(1.06)}
   .mono{
-    width:46px;height:46px;border-radius:11px;display:grid;place-items:center;
-    font-family:var(--display);font-weight:700;font-size:1.25rem;color:#fff
+    border-radius:11px;display:grid;place-items:center;
+    font-family:var(--display);font-weight:700;font-size:1.2rem;color:#fff
   }
-  .nm{font-size:.83rem;font-weight:500;letter-spacing:-.01em;text-align:center;line-height:1.25}
-  .use{font-size:.66rem;color:var(--muted);text-align:center;line-height:1.35;margin-top:-7px}
+  /* two lines are always reserved so names and subtitles line up across a row */
+  .nm{
+    font-size:.83rem;font-weight:500;letter-spacing:-.01em;text-align:center;line-height:1.25;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+    min-height:calc(2 * 1.25em)
+  }
+  .use{
+    font-size:.66rem;color:var(--muted);text-align:center;line-height:1.35;margin-top:-7px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+  }
   .free{
-    position:absolute;top:10px;right:11px;
-    font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    position:absolute;top:9px;right:10px;
+    font-size:.6rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
     color:var(--free)
   }
-  .fork{position:absolute;top:9px;left:11px;color:var(--free);display:block}
+  .fork{position:absolute;top:8px;left:10px;color:var(--free);display:block;line-height:0}
 
   /* fast-scroll ladder */
   .ladder{
     position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:15;
     display:flex;flex-direction:column;gap:2px;
-    background:rgba(255,255,255,.72);backdrop-filter:blur(10px);
-    border:1px solid var(--line);border-radius:999px;padding:6px 3px
+    background:rgba(255,255,255,.78);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    border:1px solid var(--line-strong);border-radius:999px;padding:6px 3px
   }
   .ladder a{
+    position:relative;
     width:28px;height:28px;display:grid;place-items:center;
     font-size:.58rem;font-weight:600;color:var(--muted);
-    border-radius:50%;transition:.15s
+    border-radius:50%;transition:color .15s,background .15s
   }
-  .ladder a:hover{color:var(--ink);background:rgba(28,23,18,.06)}
+  .ladder a:hover,.ladder a:focus-visible{color:var(--ink);background:rgba(28,23,18,.06)}
   .ladder a[aria-current="true"]{color:#fff;background:var(--ink)}
-  @media (max-width:900px){
-    .ladder{right:4px;padding:4px 2px}
-    .ladder a{width:24px;height:24px;font-size:.54rem}
+  /* the 2-letter codes are unreadable on their own — name them on hover, instantly */
+  .ladder a::after{
+    content:attr(data-full);
+    position:absolute;right:calc(100% + 8px);top:50%;transform:translateY(-50%);
+    background:var(--ink);color:#fff;font-size:.68rem;font-weight:500;letter-spacing:0;
+    padding:4px 9px;border-radius:7px;white-space:nowrap;pointer-events:none;
+    opacity:0;transition:opacity .14s
   }
-  @media (max-width:768px){.ladder{display:none}}
+  .ladder a:hover::after,.ladder a:focus-visible::after{opacity:1}
+  /* the rail used to sit on top of the right-hand tile column from 769px to ~1180px.
+     Only show it once the page gutter is genuinely wide enough to hold it. */
+  @media (max-width:1219px){.ladder{display:none}}
 
   /* alternatives modal */
   .ovl{
     position:fixed;inset:0;z-index:40;display:none;
-    background:rgba(28,23,18,.44);backdrop-filter:blur(4px);
+    background:rgba(28,23,18,.44);
+    -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
     align-items:center;justify-content:center;padding:20px
   }
   .ovl.on{display:flex}
   .sheet{
     background:var(--tile);border-radius:20px;max-width:430px;width:100%;
-    max-height:82vh;overflow-y:auto;overscroll-behavior:contain;
+    max-height:82vh;max-height:82dvh;   /* vh overflowed under mobile browser toolbars */
+    overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
     padding:24px 22px 18px;position:relative
   }
   .sheet .x{
-    position:absolute;top:14px;right:14px;border:0;background:rgba(28,23,18,.05);
-    width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.85rem;color:var(--muted)
+    position:absolute;top:12px;right:12px;border:0;background:rgba(28,23,18,.05);
+    width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:.9rem;color:var(--muted);
+    display:grid;place-items:center
   }
   .sheet .x:hover{color:var(--ink);background:rgba(28,23,18,.1)}
-  .m-main{display:flex;align-items:center;gap:14px;padding:2px 38px 16px 0;border-bottom:1px solid var(--line)}
-  .m-main img,.m-main .mono{width:44px;height:44px;border-radius:11px}
-  .m-main .mt{min-width:0}
+  .m-main{display:flex;align-items:center;gap:14px;padding:6px 44px 16px 0;border-bottom:1px solid var(--line)}
+  .m-main img,.m-main .mono{width:44px;height:44px;border-radius:11px;flex:none}
+  .m-main img{object-fit:contain}
+  .m-main .mt{min-width:0;flex:1 1 auto}
   .m-main .mt b{font-family:var(--display);font-size:1.05rem;letter-spacing:-.02em;display:block}
   .m-main .mt span{font-size:.76rem;color:var(--muted)}
   .m-main .open{
     margin-left:auto;flex:none;font-size:.72rem;font-weight:600;
-    background:var(--ink);color:#fff;padding:8px 14px;border-radius:999px
+    background:var(--ink);color:#fff;padding:9px 14px;border-radius:999px;min-height:var(--tap);
+    display:inline-flex;align-items:center
   }
   .m-desc{font-size:.84rem;line-height:1.55;color:var(--ink);margin:14px 2px 0}
   .m-free{font-size:.72rem;font-weight:500;color:var(--muted);margin:8px 2px 0}
@@ -193,89 +290,139 @@
   }
   .m-self{
     display:flex;align-items:center;gap:12px;margin-top:14px;padding:11px 12px;
-    border-radius:12px;background:rgba(63,122,92,.09);color:var(--free);transition:.15s
+    border-radius:12px;background:rgba(47,96,71,.09);color:var(--free);transition:background .15s
   }
-  .m-self:hover{background:rgba(63,122,92,.16)}
+  .m-self:hover{background:rgba(47,96,71,.16)}
   .m-self .at b{font-size:.8rem;font-weight:600;display:block;color:var(--free)}
-  .m-self .at span{font-size:.7rem;color:var(--free);opacity:.8}
+  .m-self .at span{font-size:.7rem;color:var(--free);opacity:.85}
   .m-self .ar{margin-left:auto;flex:none}
   .m-h{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--free);margin:16px 0 6px;display:flex;align-items:center;gap:6px}
-  .m-alt{display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:12px;transition:.15s}
+  .m-alt{display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:12px;transition:background .15s}
   .m-alt:hover{background:rgba(28,23,18,.04)}
-  .m-alt img,.m-alt .mono{width:30px;height:30px;border-radius:8px;font-size:.9rem}
+  .m-alt img,.m-alt .alogo,.m-alt .mono{width:30px;height:30px;border-radius:8px;font-size:.9rem;flex:none}
   .m-alt .at{min-width:0}
   .m-alt .at b{font-size:.83rem;font-weight:500;display:block}
   .m-alt .at span{font-size:.7rem;color:var(--muted)}
   .m-alt .ar{margin-left:auto;color:var(--muted);font-size:.8rem;flex:none}
+  /* at 320px the logo was squashed into an ellipse and the title column
+     collapsed to 65px, wrapping the subtitle over four lines */
+  @media (max-width:420px){
+    .m-main{flex-wrap:wrap;padding-right:44px}
+    .m-main .open{width:100%;margin:12px 0 0;justify-content:center}
+  }
+
+  /* no-results */
+  .empty{
+    text-align:center;padding:76px 20px 90px;color:var(--muted)
+  }
+  .empty b{display:block;font-family:var(--display);font-size:1.35rem;color:var(--ink);letter-spacing:-.02em;margin-bottom:8px}
+  .empty p{margin:0 0 18px;font-size:.86rem;line-height:1.5}
+  .empty button{
+    font-family:var(--ui);font-size:.78rem;font-weight:600;cursor:pointer;
+    background:var(--ink);color:#fff;border:0;border-radius:999px;padding:10px 18px;min-height:var(--tap)
+  }
 
   footer{
     padding:64px 0 40px;font-size:.72rem;color:var(--muted);
-    display:flex;gap:16px;flex-wrap:wrap
+    display:flex;gap:6px 18px;flex-wrap:wrap;align-items:center
   }
-  footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line)}
+  footer a,footer span{min-height:var(--tap);display:inline-flex;align-items:center}
+  footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line-strong)}
   footer a:hover{color:var(--ink)}
 
-  @media (max-width:640px){
-    html{scroll-padding-top:118px}
-    .grid{grid-template-columns:repeat(auto-fill,minmax(102px,1fr));gap:9px}
-    .tile{padding:17px 8px 13px;gap:10px;border-radius:15px}
-    .logo,.mono{width:36px;height:36px;border-radius:9px}
-    .nm{font-size:.73rem}
-    .use{font-size:.58rem;margin-top:-5px}
-    section{padding:38px 0 4px}
-    .bar-in{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:10px;gap:8px 10px}
+  /* Between 641px and 900px the mark + filter + search leave the chip rail
+     almost no width. Give search and chips their own rows instead of
+     squeezing both, the same way the phone layout does. */
+  @media (max-width:900px){
+    .bar-in{flex-wrap:wrap;padding-top:10px;padding-bottom:10px;gap:8px 10px}
     .seg{margin-left:auto}
-    .seg button{padding:5px 9px;font-size:.66rem}
-    .search{flex:1 1 100%;max-width:none;order:3;padding:8px 14px}
-    .chips{flex:1 1 100%;order:4;margin-left:0}
+    .search-wrap{flex:1 1 100%;max-width:none;order:3}
+    .chips-rail{flex:1 1 100%;order:4}
+  }
+  @media (max-width:640px){
+    .grid{gap:9px}
+    .tile{padding:17px 8px 13px;gap:10px;border-radius:15px}
+    .logo,.mono{width:36px;height:36px}
+    .mono{border-radius:9px;font-size:1rem}
+    .nm{font-size:.73rem}
+    .use{font-size:.6rem;margin-top:-5px}
+    section{padding:38px 0 4px}
     .hero a{padding:14px 16px;gap:12px}
     .hero .go{display:none}
+    .empty{padding:56px 16px 70px}
   }
   @media (prefers-reduced-motion:reduce){
     html{scroll-behavior:auto}
-    .tile,.logo,.hero a{transition:none}
+    *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
     .tile:hover,.hero a:hover{transform:none}
+    .tile:hover .logo,.tile:hover .mono{transform:none}
+    .chips{scroll-behavior:auto}
+  }
+  /* Windows High Contrast / forced colours: the 1.1:1 hairline borders vanish entirely */
+  @media (forced-colors:active){
+    .tile,.sheet,.ladder,.bar,.search{border:1px solid CanvasText}
+    .seg button[aria-checked="true"],.ladder a[aria-current="true"]{forced-color-adjust:none;background:Highlight;color:HighlightText}
+    .free,.fork,.m-h{color:CanvasText}
   }
   :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .ovl :focus-visible{outline-color:var(--ink)}
 </style>
 </head>
 <body>
 
-<div class="bar">
+<a class="skip" href="#mainLand">Skip to the shelf</a>
+
+<header class="bar">
   <div class="bar-in">
-    <h1 class="mark">ProtoShelf</h1>
-    <div class="seg" id="seg" role="group" aria-label="Filter tools">
-      <button aria-pressed="true" data-f="all">All</button>
-      <button aria-pressed="false" data-f="oss">Open source</button>
-      <button aria-pressed="false" data-f="cloud">Cloud</button>
+    <span class="mark">ProtoShelf</span>
+    <div class="seg" id="seg" role="radiogroup" aria-label="Filter by licence">
+      <button type="button" role="radio" aria-checked="true"  data-f="all">All</button>
+      <button type="button" role="radio" aria-checked="false" data-f="oss">Open source</button>
+      <button type="button" role="radio" aria-checked="false" data-f="cloud">Hosted</button>
     </div>
-    <input class="search" id="search" type="search" placeholder="Search tools — press /" aria-label="Search tools">
-    <nav class="chips" id="chips" aria-label="Categories"></nav>
+    <div class="search-wrap" id="searchWrap">
+      <input class="search" id="search" type="search" placeholder="Search tools"
+             aria-label="Search tools" aria-describedby="searchHint"
+             autocomplete="off" autocapitalize="off" autocorrect="off"
+             spellcheck="false" enterkeyhint="search">
+      <button class="clear" id="clear" type="button" aria-label="Clear search">✕</button>
+      <span class="vh" id="searchHint">Press the slash key from anywhere on the page to jump to search.</span>
+    </div>
+    <div class="chips-rail" id="chipsRail">
+      <nav class="chips" id="chips" aria-label="Categories"></nav>
+    </div>
   </div>
-</div>
+</header>
 
 <div class="wrap">
+ <main id="mainLand">
+  <h1 class="vh">ProtoShelf: free AI tools, startup credits and the builder stack</h1>
   <div class="hero">
     <a href="https://www.proto-engineer.com/" target="_blank" rel="noopener">
-      <img alt="Proto.Engineer" src="assets/proto-engineer.png" width="42" height="42">
+      <img alt="" src="assets/proto-engineer.png" width="42" height="42" decoding="async">
       <span class="t"><b>Proto.Engineer</b><span>Our home. Learn engineering the builder way</span></span>
-      <span class="go">Visit →</span>
+      <span class="go">Visit <span aria-hidden="true">→</span></span>
     </a>
   </div>
-  <main id="main"><section id="ides"><div class="head"><div class="head-top"><h2>Agentic IDEs</h2><span class="rule"></span><span class="n">6</span></div><p class="kind">Editors where the AI does the work</p></div><div class="grid"><a class="tile" href="https://antigravity.google" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Antigravity</span><span class="use">Google&#x27;s agentic editor</span></a><a class="tile" href="https://cursor.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Cursor</span><span class="use">AI-first code editor</span></a><a class="tile" href="https://windsurf.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Windsurf</span><span class="use">Agentic code editor</span></a><a class="tile" href="https://kiro.dev" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Kiro</span><span class="use">AWS spec-driven IDE</span></a><a class="tile" href="https://trae.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Trae</span><span class="use">ByteDance&#x27;s free AI IDE</span></a><a class="tile" href="https://firebase.studio" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Firebase Studio</span><span class="use">Cloud IDE, app from a prompt</span></a></div></section><section id="plugins"><div class="head"><div class="head-top"><h2>AI plugins</h2><span class="rule"></span><span class="n">9</span></div><p class="kind">Extend Claude, ChatGPT and agents</p></div><div class="grid"><a class="tile" href="https://github.com/modelcontextprotocol/servers" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">MCP Servers</span><span class="use">The plugin standard for AI apps</span></a><a class="tile" href="https://smithery.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Smithery</span><span class="use">MCP server registry</span></a><a class="tile" href="https://composio.dev" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Composio</span><span class="use">250+ tool integrations</span></a><a class="tile" href="https://n8n.io" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">n8n</span><span class="use">Automation with AI nodes</span></a><a class="tile" href="https://dify.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Dify</span><span class="use">Open LLM app platform</span></a><a class="tile" href="https://flowiseai.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Flowise</span><span class="use">Drag-drop agent builder</span></a><a class="tile" href="https://langflow.org" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Langflow</span><span class="use">Visual agent builder</span></a><a class="tile" href="https://activepieces.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Activepieces</span><span class="use">Open Zapier alternative</span></a><a class="tile" href="https://openrouter.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">OpenRouter</span><span class="use">Every AI model, one API</span></a></div></section><section id="assistants"><div class="head"><div class="head-top"><h2>Assistants</h2><span class="rule"></span><span class="n">8</span></div><p class="kind">Ask anything, get answers</p></div><div class="grid"><a class="tile" href="https://chatgpt.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">ChatGPT</span><span class="use">Creativity, writing, everyday help</span></a><a class="tile" href="https://claude.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Claude</span><span class="use">Complex coding, deep reasoning</span></a><a class="tile" href="https://gemini.google.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Gemini</span><span class="use">Images, multimodal, huge context</span></a><a class="tile" href="https://deepseek.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">DeepSeek</span><span class="use">Math + reasoning, open weights</span></a><a class="tile" href="https://perplexity.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Perplexity</span><span class="use">Research with citations</span></a><a class="tile" href="https://grok.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Grok</span><span class="use">Real-time X knowledge</span></a><a class="tile" href="https://mistral.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Mistral</span><span class="use">Open European models</span></a><a class="tile" href="https://ollama.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Ollama</span><span class="use">Run AI models locally</span></a></div></section><section id="stack"><div class="head"><div class="head-top"><h2>Builder stack</h2><span class="rule"></span><span class="n">23</span></div><p class="kind">What we actually build with</p></div><div class="grid"><a class="tile" href="https://github.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">GitHub</span><span class="use">Code hosting</span></a><a class="tile" href="https://supabase.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Supabase</span><span class="use">Postgres backend</span></a><a class="tile" href="https://postman.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Postman</span><span class="use">API testing</span></a><a class="tile" href="https://expo.dev" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Expo</span><span class="use">React Native builds</span></a><a class="tile" href="https://replit.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Replit</span><span class="use">Cloud IDE + hosting</span></a><a class="tile" href="https://bubble.io" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Bubble</span><span class="use">No-code web apps</span></a><a class="tile" href="https://posthog.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">PostHog</span><span class="use">Product analytics</span></a><a class="tile" href="https://resend.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Resend</span><span class="use">Email API</span></a><a class="tile" href="https://newrelic.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">New Relic</span><span class="use">App monitoring</span></a><a class="tile" href="https://coderabbit.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">CodeRabbit</span><span class="use">AI pull-request reviews</span></a><a class="tile" href="https://notion.so" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Notion</span><span class="use">Docs and wikis</span></a><a class="tile" href="https://slack.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Slack</span><span class="use">Team chat</span></a><a class="tile" href="https://whimsical.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Whimsical</span><span class="use">Diagrams and wireframes</span></a><a class="tile" href="https://aistudio.google.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Google AI Studio</span><span class="use">Gemini API playground</span></a><a class="tile" href="https://otter.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Otter</span><span class="use">Meeting notes</span></a><a class="tile" href="https://mercury.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Mercury</span><span class="use">Startup banking</span></a><a class="tile" href="https://coolify.io" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Coolify</span><span class="use">Self-host your apps</span></a><a class="tile" href="https://uptime.kuma.pet" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Uptime Kuma</span><span class="use">Is-my-site-up monitoring</span></a><a class="tile" href="https://nocodb.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">NocoDB</span><span class="use">Open Airtable alternative</span></a><a class="tile" href="https://strapi.io" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Strapi</span><span class="use">Headless CMS</span></a><a class="tile" href="https://capacities.io/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Capacities</span><span class="use">Notes as a knowledge graph</span></a><a class="tile" href="https://obsidian.md" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Obsidian</span><span class="use">Local-first linked notes</span></a><a class="tile" href="https://launchdarkly.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">LaunchDarkly</span><span class="use">Feature flags</span></a></div></section><section id="coding"><div class="head"><div class="head-top"><h2>Coding</h2><span class="rule"></span><span class="n">9</span></div><p class="kind">Write and fix code</p></div><div class="grid"><a class="tile" href="https://cline.bot" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Cline</span><span class="use">Open-source agent in VS Code</span></a><a class="tile" href="https://github.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Copilot</span><span class="use">Autocomplete in your editor</span></a><a class="tile" href="https://bolt.new" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Bolt</span><span class="use">Full apps in the browser</span></a><a class="tile" href="https://lovable.dev" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Lovable</span><span class="use">Idea to web app</span></a><a class="tile" href="https://v0.app" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">v0</span><span class="use">UI from a prompt</span></a><a class="tile" href="https://opencode.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">OpenCode</span><span class="use">Open terminal coding agent</span></a><a class="tile" href="https://github.com/google-gemini/gemini-cli" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Gemini CLI</span><span class="use">Google&#x27;s terminal agent, free</span></a><a class="tile" href="https://github.com/openai/codex" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Codex CLI</span><span class="use">OpenAI&#x27;s terminal agent</span></a><a class="tile" href="https://claude.com" target="_blank" rel="noopener"><span class="nm">Claude Code</span><span class="use">Terminal coding agent</span></a></div></section><section id="ideas"><div class="head"><div class="head-top"><h2>Ideas</h2><span class="rule"></span><span class="n">6</span></div><p class="kind">Problems worth building, straight from real companies</p></div><div class="grid"><a class="tile" href="https://www.ycombinator.com/rfs" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">YC Requests</span><span class="use">Ideas YC wants built</span></a><a class="tile" href="https://razorpay.com/m/fix-my-itch/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Fix My Itch</span><span class="use">Real problems, India fintech</span></a><a class="tile" href="https://a16z.com/big-ideas-in-tech-2025/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">a16z Big Ideas</span><span class="use">What a16z sees coming</span></a><a class="tile" href="https://aigrant.org/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">AI Grant</span><span class="use">Funded open AI ideas</span></a><a class="tile" href="https://www.sih.gov.in/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Smart India Hackathon</span><span class="use">Govt problem statements</span></a><a class="tile" href="https://aim.gov.in/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">AIM Challenges</span><span class="use">Atal innovation missions</span></a></div></section><section id="identity"><div class="head"><div class="head-top"><h2>Identity &amp; KYC</h2><span class="rule"></span><span class="n">8</span></div><p class="kind">Check someone is a real person</p></div><div class="grid"><a class="tile" href="https://didit.me" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Didit</span><span class="use">Free ID verification</span></a><a class="tile" href="https://withpersona.com" target="_blank" rel="noopener"><span class="nm">Persona</span><span class="use">KYC building blocks</span></a><a class="tile" href="https://hyperverge.co" target="_blank" rel="noopener"><span class="nm">HyperVerge</span><span class="use">India-focused KYC</span></a><a class="tile" href="https://idfy.com" target="_blank" rel="noopener"><span class="nm">IDfy</span><span class="use">Background checks, India</span></a><a class="tile" href="https://signzy.com" target="_blank" rel="noopener"><span class="nm">Signzy</span><span class="use">Bank-grade onboarding</span></a><a class="tile" href="https://sumsub.com" target="_blank" rel="noopener"><span class="nm">Sumsub</span><span class="use">Global KYC and AML</span></a><a class="tile" href="https://onfido.com" target="_blank" rel="noopener"><span class="nm">Onfido</span><span class="use">Document + selfie checks</span></a><a class="tile" href="https://veriff.com" target="_blank" rel="noopener"><span class="nm">Veriff</span><span class="use">Fast identity checks</span></a></div></section><section id="otp"><div class="head"><div class="head-top"><h2>OTP &amp; messaging</h2><span class="rule"></span><span class="n">9</span></div><p class="kind">Send OTP codes and SMS</p></div><div class="grid"><a class="tile" href="https://keycloak.org" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Keycloak</span><span class="use">Self-hosted login + OTP</span></a><a class="tile" href="https://firebase.google.com" target="_blank" rel="noopener"><span class="nm">Firebase Auth</span><span class="use">Phone OTP login (SMS billed)</span></a><a class="tile" href="https://fast2sms.com" target="_blank" rel="noopener"><span class="nm">Fast2SMS</span><span class="use">Cheap Indian SMS</span></a><a class="tile" href="https://2factor.in" target="_blank" rel="noopener"><span class="nm">2Factor</span><span class="use">Indian OTP API</span></a><a class="tile" href="https://msg91.com" target="_blank" rel="noopener"><span class="nm">MSG91</span><span class="use">OTP + WhatsApp, India</span></a><a class="tile" href="https://plivo.com" target="_blank" rel="noopener"><span class="nm">Plivo</span><span class="use">Global SMS and voice</span></a><a class="tile" href="https://twilio.com" target="_blank" rel="noopener"><span class="nm">Twilio</span><span class="use">The default SMS API</span></a><a class="tile" href="https://vonage.com" target="_blank" rel="noopener"><span class="nm">Vonage</span><span class="use">SMS and verify APIs</span></a><a class="tile" href="https://infobip.com" target="_blank" rel="noopener"><span class="nm">Infobip</span><span class="use">Omnichannel messaging</span></a></div></section><section id="payments"><div class="head"><div class="head-top"><h2>Payments</h2><span class="rule"></span><span class="n">6</span></div><p class="kind">Get paid, even before you register a company</p></div><div class="grid"><a class="tile" href="https://www.phonepe.com/business-solutions/payment-gateway/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">PhonePe PG</span><span class="use">Zero-fee UPI gateway</span></a><a class="tile" href="https://razorpay.com" target="_blank" rel="noopener"><span class="nm">Razorpay</span><span class="use">Indian payments, UPI + cards</span></a><a class="tile" href="https://cashfree.com" target="_blank" rel="noopener"><span class="nm">Cashfree</span><span class="use">Gateway + instant payouts</span></a><a class="tile" href="https://instamojo.com" target="_blank" rel="noopener"><span class="nm">Instamojo</span><span class="use">Payment links for individuals</span></a><a class="tile" href="https://lemonsqueezy.com" target="_blank" rel="noopener"><span class="nm">Lemon Squeezy</span><span class="use">Sell globally, no company needed</span></a><a class="tile" href="https://stripe.com" target="_blank" rel="noopener"><span class="nm">Stripe</span><span class="use">Global cards + subscriptions</span></a></div></section><section id="programs"><div class="head"><div class="head-top"><h2>Startup programs</h2><span class="rule"></span><span class="n">21</span></div><p class="kind">Free credits and perks for founders</p></div><div class="grid"><a class="tile" href="https://aws.amazon.com/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">AWS Activate</span><span class="use">AWS cloud credits</span></a><a class="tile" href="https://cloud.google.com/startup/apply" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Google for Startups</span><span class="use">GCP credits + Workspace</span></a><a class="tile" href="https://www.nvidia.com/en-in/startups/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">NVIDIA Inception</span><span class="use">Path to $100K AWS credits</span></a><a class="tile" href="https://www.mongodb.com/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">MongoDB for Startups</span><span class="use">Atlas credits + advisor</span></a><a class="tile" href="https://www.anthropic.com/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Claude for Startups</span><span class="use">Claude API credits</span></a><a class="tile" href="https://openai.com/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">OpenAI Startups</span><span class="use">Builder community + credits</span></a><a class="tile" href="https://elevenlabs.io/startup-grants" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">ElevenLabs Grants</span><span class="use">Voice API grant</span></a><a class="tile" href="https://sentry.io/for/startups/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Sentry for Startups</span><span class="use">$5K monitoring credits</span></a><a class="tile" href="https://www.cloudflare.com/forstartups/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Cloudflare Startups</span><span class="use">Product credits</span></a><a class="tile" href="https://about.gitlab.com/solutions/startups/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">GitLab for Startups</span><span class="use">Free GitLab Ultimate</span></a><a class="tile" href="https://retool.com/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Retool for Startups</span><span class="use">Internal-tool credits</span></a><a class="tile" href="https://help.withpersona.com/articles/1XNnqukfZY9VamF2e7jkuJ/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Persona Startups</span><span class="use">KYC + KYB free tier</span></a><a class="tile" href="https://www.signzy.com/fintech-apis/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Signzy Startups</span><span class="use">KYC + KYB APIs, India</span></a><a class="tile" href="https://www.assemblyai.com/contact/startup-program" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">AssemblyAI Startups</span><span class="use">Speech-to-text credits</span></a><a class="tile" href="https://arize.com/arize-for-startups/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Arize for Startups</span><span class="use">LLM observability + evals</span></a><a class="tile" href="https://www.perplexity.ai/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Perplexity Startups</span><span class="use">API credits + Pro</span></a><a class="tile" href="https://experience.dropbox.com/docsend/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">DocSend Startups</span><span class="use">90% off deck sharing</span></a><a class="tile" href="https://www.infobip.com/startup" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Infobip Tribe</span><span class="use">Messaging credits</span></a><a class="tile" href="https://ads.google.com/aw/signup" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Google Ads credit</span><span class="use">Ad credit after first spend</span></a><a class="tile" href="https://stripe.com/atlas" target="_blank" rel="noopener"><span class="nm">Stripe Atlas</span><span class="use">US inc + partner perks</span></a><a class="tile" href="https://azure.microsoft.com/free/students" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Azure for Students</span><span class="use">$100 Azure credit</span></a></div></section><section id="video"><div class="head"><div class="head-top"><h2>Video &amp; image</h2><span class="rule"></span><span class="n">11</span></div><p class="kind">Make pictures and videos</p></div><div class="grid"><a class="tile" href="https://krea.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Krea</span><span class="use">Real-time image playground</span></a><a class="tile" href="https://leonardo.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Leonardo</span><span class="use">Game art and illustrations</span></a><a class="tile" href="https://klingai.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Kling</span><span class="use">Text to video</span></a><a class="tile" href="https://freepik.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Freepik</span><span class="use">AI plus stock assets</span></a><a class="tile" href="https://comfy.org" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">ComfyUI</span><span class="use">Node-based image + video studio</span></a><a class="tile" href="https://github.com/AUTOMATIC1111/stable-diffusion-webui" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">SD WebUI</span><span class="use">Classic image generation UI</span></a><a class="tile" href="https://pixabay.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Pixabay</span><span class="use">Free stock photos + video</span></a><a class="tile" href="https://seed.bytedance.com/en/seedance" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Seedance</span><span class="use">ByteDance&#x27;s video model</span></a><a class="tile" href="https://runwayml.com" target="_blank" rel="noopener"><span class="nm">Runway</span><span class="use">Pro AI video editing</span></a><a class="tile" href="https://labs.google" target="_blank" rel="noopener"><span class="nm">Flow</span><span class="use">Cinematic scenes by Google</span></a><a class="tile" href="https://midjourney.com" target="_blank" rel="noopener"><span class="nm">Midjourney</span><span class="use">Best-in-class images</span></a></div></section><section id="voice"><div class="head"><div class="head-top"><h2>Voice &amp; audio</h2><span class="rule"></span><span class="n">6</span></div><p class="kind">Make speech and music</p></div><div class="grid"><a class="tile" href="https://github.com/openai/whisper" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Whisper</span><span class="use">Free speech to text</span></a><a class="tile" href="https://elevenlabs.io" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">ElevenLabs</span><span class="use">Lifelike text to speech</span></a><a class="tile" href="https://deepgram.com" target="_blank" rel="noopener"><span class="nm">Deepgram</span><span class="use">Fast transcription API</span></a><a class="tile" href="https://suno.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Suno</span><span class="use">Full songs from a prompt</span></a><a class="tile" href="https://murf.ai" target="_blank" rel="noopener"><span class="nm">Murf</span><span class="use">Voiceovers for videos</span></a><a class="tile" href="https://cartesia.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Cartesia</span><span class="use">Low-latency voice API</span></a></div></section></main>
-  <footer id="foot"></footer>
+  <p class="vh" role="status" aria-live="polite" id="status"></p>
+  <div id="main"><section id="ides"><div class="head"><div class="head-top"><h2>Agentic IDEs</h2><span class="rule"></span><span class="n">6</span></div><p class="kind">Editors where the AI does the work</p></div><div class="grid"><a class="tile" href="https://antigravity.google" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Antigravity</span><span class="use">Google&#x27;s agentic editor</span></a><a class="tile" href="https://cursor.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Cursor</span><span class="use">AI-first code editor</span></a><a class="tile" href="https://windsurf.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Windsurf</span><span class="use">Agentic code editor</span></a><a class="tile" href="https://kiro.dev" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Kiro</span><span class="use">AWS spec-driven IDE</span></a><a class="tile" href="https://trae.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Trae</span><span class="use">ByteDance&#x27;s free AI IDE</span></a><a class="tile" href="https://firebase.studio" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Firebase Studio</span><span class="use">Cloud IDE, app from a prompt</span></a></div></section><section id="plugins"><div class="head"><div class="head-top"><h2>AI plugins</h2><span class="rule"></span><span class="n">9</span></div><p class="kind">Extend Claude, ChatGPT and agents</p></div><div class="grid"><a class="tile" href="https://github.com/modelcontextprotocol/servers" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">MCP Servers</span><span class="use">The plugin standard for AI apps</span></a><a class="tile" href="https://smithery.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Smithery</span><span class="use">MCP server registry</span></a><a class="tile" href="https://composio.dev" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Composio</span><span class="use">250+ tool integrations</span></a><a class="tile" href="https://n8n.io" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">n8n</span><span class="use">Automation with AI nodes</span></a><a class="tile" href="https://dify.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Dify</span><span class="use">Open LLM app platform</span></a><a class="tile" href="https://flowiseai.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Flowise</span><span class="use">Drag-drop agent builder</span></a><a class="tile" href="https://langflow.org" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Langflow</span><span class="use">Visual agent builder</span></a><a class="tile" href="https://activepieces.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Activepieces</span><span class="use">Open Zapier alternative</span></a><a class="tile" href="https://openrouter.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">OpenRouter</span><span class="use">Every AI model, one API</span></a></div></section><section id="assistants"><div class="head"><div class="head-top"><h2>Assistants</h2><span class="rule"></span><span class="n">8</span></div><p class="kind">Ask anything, get answers</p></div><div class="grid"><a class="tile" href="https://chatgpt.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">ChatGPT</span><span class="use">Creativity, writing, everyday help</span></a><a class="tile" href="https://claude.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Claude</span><span class="use">Complex coding, deep reasoning</span></a><a class="tile" href="https://gemini.google.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Gemini</span><span class="use">Images, multimodal, huge context</span></a><a class="tile" href="https://deepseek.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">DeepSeek</span><span class="use">Math + reasoning, open weights</span></a><a class="tile" href="https://perplexity.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Perplexity</span><span class="use">Research with citations</span></a><a class="tile" href="https://grok.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Grok</span><span class="use">Real-time X knowledge</span></a><a class="tile" href="https://mistral.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Mistral</span><span class="use">Open European models</span></a><a class="tile" href="https://ollama.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Ollama</span><span class="use">Run AI models locally</span></a></div></section><section id="stack"><div class="head"><div class="head-top"><h2>Builder stack</h2><span class="rule"></span><span class="n">23</span></div><p class="kind">What we actually build with</p></div><div class="grid"><a class="tile" href="https://github.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">GitHub</span><span class="use">Code hosting</span></a><a class="tile" href="https://supabase.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Supabase</span><span class="use">Postgres backend</span></a><a class="tile" href="https://postman.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Postman</span><span class="use">API testing</span></a><a class="tile" href="https://expo.dev" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Expo</span><span class="use">React Native builds</span></a><a class="tile" href="https://replit.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Replit</span><span class="use">Cloud IDE + hosting</span></a><a class="tile" href="https://bubble.io" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Bubble</span><span class="use">No-code web apps</span></a><a class="tile" href="https://posthog.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">PostHog</span><span class="use">Product analytics</span></a><a class="tile" href="https://resend.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Resend</span><span class="use">Email API</span></a><a class="tile" href="https://newrelic.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">New Relic</span><span class="use">App monitoring</span></a><a class="tile" href="https://coderabbit.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">CodeRabbit</span><span class="use">AI pull-request reviews</span></a><a class="tile" href="https://notion.so" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Notion</span><span class="use">Docs and wikis</span></a><a class="tile" href="https://slack.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Slack</span><span class="use">Team chat</span></a><a class="tile" href="https://whimsical.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Whimsical</span><span class="use">Diagrams and wireframes</span></a><a class="tile" href="https://aistudio.google.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Google AI Studio</span><span class="use">Gemini API playground</span></a><a class="tile" href="https://otter.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Otter</span><span class="use">Meeting notes</span></a><a class="tile" href="https://mercury.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Mercury</span><span class="use">Startup banking</span></a><a class="tile" href="https://coolify.io" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Coolify</span><span class="use">Self-host your apps</span></a><a class="tile" href="https://uptime.kuma.pet" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Uptime Kuma</span><span class="use">Is-my-site-up monitoring</span></a><a class="tile" href="https://nocodb.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">NocoDB</span><span class="use">Open Airtable alternative</span></a><a class="tile" href="https://strapi.io" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Strapi</span><span class="use">Headless CMS</span></a><a class="tile" href="https://capacities.io/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Capacities</span><span class="use">Notes as a knowledge graph</span></a><a class="tile" href="https://obsidian.md" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Obsidian</span><span class="use">Local-first linked notes</span></a><a class="tile" href="https://launchdarkly.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">LaunchDarkly</span><span class="use">Feature flags</span></a></div></section><section id="coding"><div class="head"><div class="head-top"><h2>Coding</h2><span class="rule"></span><span class="n">9</span></div><p class="kind">Write and fix code</p></div><div class="grid"><a class="tile" href="https://cline.bot" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Cline</span><span class="use">Open-source agent in VS Code</span></a><a class="tile" href="https://github.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Copilot</span><span class="use">Autocomplete in your editor</span></a><a class="tile" href="https://bolt.new" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Bolt</span><span class="use">Full apps in the browser</span></a><a class="tile" href="https://lovable.dev" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Lovable</span><span class="use">Idea to web app</span></a><a class="tile" href="https://v0.app" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">v0</span><span class="use">UI from a prompt</span></a><a class="tile" href="https://opencode.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">OpenCode</span><span class="use">Open terminal coding agent</span></a><a class="tile" href="https://github.com/google-gemini/gemini-cli" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Gemini CLI</span><span class="use">Google&#x27;s terminal agent, free</span></a><a class="tile" href="https://github.com/openai/codex" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Codex CLI</span><span class="use">OpenAI&#x27;s terminal agent</span></a><a class="tile" href="https://claude.com" target="_blank" rel="noopener"><span class="nm">Claude Code</span><span class="use">Terminal coding agent</span></a></div></section><section id="ideas"><div class="head"><div class="head-top"><h2>Ideas</h2><span class="rule"></span><span class="n">6</span></div><p class="kind">Problems worth building, straight from real companies</p></div><div class="grid"><a class="tile" href="https://www.ycombinator.com/rfs" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">YC Requests</span><span class="use">Ideas YC wants built</span></a><a class="tile" href="https://razorpay.com/m/fix-my-itch/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Fix My Itch</span><span class="use">Real problems, India fintech</span></a><a class="tile" href="https://a16z.com/big-ideas-in-tech-2025/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">a16z Big Ideas</span><span class="use">What a16z sees coming</span></a><a class="tile" href="https://aigrant.org/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">AI Grant</span><span class="use">Funded open AI ideas</span></a><a class="tile" href="https://www.sih.gov.in/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Smart India Hackathon</span><span class="use">Govt problem statements</span></a><a class="tile" href="https://aim.gov.in/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">AIM Challenges</span><span class="use">Atal innovation missions</span></a></div></section><section id="identity"><div class="head"><div class="head-top"><h2>Identity &amp; KYC</h2><span class="rule"></span><span class="n">8</span></div><p class="kind">Check someone is a real person</p></div><div class="grid"><a class="tile" href="https://didit.me" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Didit</span><span class="use">Free ID verification</span></a><a class="tile" href="https://withpersona.com" target="_blank" rel="noopener"><span class="nm">Persona</span><span class="use">KYC building blocks</span></a><a class="tile" href="https://hyperverge.co" target="_blank" rel="noopener"><span class="nm">HyperVerge</span><span class="use">India-focused KYC</span></a><a class="tile" href="https://idfy.com" target="_blank" rel="noopener"><span class="nm">IDfy</span><span class="use">Background checks, India</span></a><a class="tile" href="https://signzy.com" target="_blank" rel="noopener"><span class="nm">Signzy</span><span class="use">Bank-grade onboarding</span></a><a class="tile" href="https://sumsub.com" target="_blank" rel="noopener"><span class="nm">Sumsub</span><span class="use">Global KYC and AML</span></a><a class="tile" href="https://onfido.com" target="_blank" rel="noopener"><span class="nm">Onfido</span><span class="use">Document + selfie checks</span></a><a class="tile" href="https://veriff.com" target="_blank" rel="noopener"><span class="nm">Veriff</span><span class="use">Fast identity checks</span></a></div></section><section id="otp"><div class="head"><div class="head-top"><h2>OTP &amp; messaging</h2><span class="rule"></span><span class="n">9</span></div><p class="kind">Send OTP codes and SMS</p></div><div class="grid"><a class="tile" href="https://keycloak.org" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Keycloak</span><span class="use">Self-hosted login + OTP</span></a><a class="tile" href="https://firebase.google.com" target="_blank" rel="noopener"><span class="nm">Firebase Auth</span><span class="use">Phone OTP login (SMS billed)</span></a><a class="tile" href="https://fast2sms.com" target="_blank" rel="noopener"><span class="nm">Fast2SMS</span><span class="use">Cheap Indian SMS</span></a><a class="tile" href="https://2factor.in" target="_blank" rel="noopener"><span class="nm">2Factor</span><span class="use">Indian OTP API</span></a><a class="tile" href="https://msg91.com" target="_blank" rel="noopener"><span class="nm">MSG91</span><span class="use">OTP + WhatsApp, India</span></a><a class="tile" href="https://plivo.com" target="_blank" rel="noopener"><span class="nm">Plivo</span><span class="use">Global SMS and voice</span></a><a class="tile" href="https://twilio.com" target="_blank" rel="noopener"><span class="nm">Twilio</span><span class="use">The default SMS API</span></a><a class="tile" href="https://vonage.com" target="_blank" rel="noopener"><span class="nm">Vonage</span><span class="use">SMS and verify APIs</span></a><a class="tile" href="https://infobip.com" target="_blank" rel="noopener"><span class="nm">Infobip</span><span class="use">Omnichannel messaging</span></a></div></section><section id="payments"><div class="head"><div class="head-top"><h2>Payments</h2><span class="rule"></span><span class="n">6</span></div><p class="kind">Get paid, even before you register a company</p></div><div class="grid"><a class="tile" href="https://www.phonepe.com/business-solutions/payment-gateway/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">PhonePe PG</span><span class="use">Zero-fee UPI gateway</span></a><a class="tile" href="https://razorpay.com" target="_blank" rel="noopener"><span class="nm">Razorpay</span><span class="use">Indian payments, UPI + cards</span></a><a class="tile" href="https://cashfree.com" target="_blank" rel="noopener"><span class="nm">Cashfree</span><span class="use">Gateway + instant payouts</span></a><a class="tile" href="https://instamojo.com" target="_blank" rel="noopener"><span class="nm">Instamojo</span><span class="use">Payment links for individuals</span></a><a class="tile" href="https://lemonsqueezy.com" target="_blank" rel="noopener"><span class="nm">Lemon Squeezy</span><span class="use">Sell globally, no company needed</span></a><a class="tile" href="https://stripe.com" target="_blank" rel="noopener"><span class="nm">Stripe</span><span class="use">Global cards + subscriptions</span></a></div></section><section id="programs"><div class="head"><div class="head-top"><h2>Startup programs</h2><span class="rule"></span><span class="n">21</span></div><p class="kind">Free credits and perks for founders</p></div><div class="grid"><a class="tile" href="https://aws.amazon.com/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">AWS Activate</span><span class="use">AWS cloud credits</span></a><a class="tile" href="https://cloud.google.com/startup/apply" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Google for Startups</span><span class="use">GCP credits + Workspace</span></a><a class="tile" href="https://www.nvidia.com/en-in/startups/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">NVIDIA Inception</span><span class="use">Path to $100K AWS credits</span></a><a class="tile" href="https://www.mongodb.com/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">MongoDB for Startups</span><span class="use">Atlas credits + advisor</span></a><a class="tile" href="https://www.anthropic.com/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Claude for Startups</span><span class="use">Claude API credits</span></a><a class="tile" href="https://openai.com/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">OpenAI Startups</span><span class="use">Builder community + credits</span></a><a class="tile" href="https://elevenlabs.io/startup-grants" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">ElevenLabs Grants</span><span class="use">Voice API grant</span></a><a class="tile" href="https://sentry.io/for/startups/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Sentry for Startups</span><span class="use">$5K monitoring credits</span></a><a class="tile" href="https://www.cloudflare.com/forstartups/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Cloudflare Startups</span><span class="use">Product credits</span></a><a class="tile" href="https://about.gitlab.com/solutions/startups/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">GitLab for Startups</span><span class="use">Free GitLab Ultimate</span></a><a class="tile" href="https://retool.com/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Retool for Startups</span><span class="use">Internal-tool credits</span></a><a class="tile" href="https://help.withpersona.com/articles/1XNnqukfZY9VamF2e7jkuJ/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Persona Startups</span><span class="use">KYC + KYB free tier</span></a><a class="tile" href="https://www.signzy.com/fintech-apis/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Signzy Startups</span><span class="use">KYC + KYB APIs, India</span></a><a class="tile" href="https://www.assemblyai.com/contact/startup-program" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">AssemblyAI Startups</span><span class="use">Speech-to-text credits</span></a><a class="tile" href="https://arize.com/arize-for-startups/" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Arize for Startups</span><span class="use">LLM observability + evals</span></a><a class="tile" href="https://www.perplexity.ai/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Perplexity Startups</span><span class="use">API credits + Pro</span></a><a class="tile" href="https://experience.dropbox.com/docsend/startups" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">DocSend Startups</span><span class="use">90% off deck sharing</span></a><a class="tile" href="https://www.infobip.com/startup" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Infobip Tribe</span><span class="use">Messaging credits</span></a><a class="tile" href="https://ads.google.com/aw/signup" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Google Ads credit</span><span class="use">Ad credit after first spend</span></a><a class="tile" href="https://stripe.com/atlas" target="_blank" rel="noopener"><span class="nm">Stripe Atlas</span><span class="use">US inc + partner perks</span></a><a class="tile" href="https://azure.microsoft.com/free/students" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Azure for Students</span><span class="use">$100 Azure credit</span></a></div></section><section id="video"><div class="head"><div class="head-top"><h2>Video &amp; image</h2><span class="rule"></span><span class="n">11</span></div><p class="kind">Make pictures and videos</p></div><div class="grid"><a class="tile" href="https://krea.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Krea</span><span class="use">Real-time image playground</span></a><a class="tile" href="https://leonardo.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Leonardo</span><span class="use">Game art and illustrations</span></a><a class="tile" href="https://klingai.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Kling</span><span class="use">Text to video</span></a><a class="tile" href="https://freepik.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Freepik</span><span class="use">AI plus stock assets</span></a><a class="tile" href="https://comfy.org" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">ComfyUI</span><span class="use">Node-based image + video studio</span></a><a class="tile" href="https://github.com/AUTOMATIC1111/stable-diffusion-webui" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">SD WebUI</span><span class="use">Classic image generation UI</span></a><a class="tile" href="https://pixabay.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Pixabay</span><span class="use">Free stock photos + video</span></a><a class="tile" href="https://seed.bytedance.com/en/seedance" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Seedance</span><span class="use">ByteDance&#x27;s video model</span></a><a class="tile" href="https://runwayml.com" target="_blank" rel="noopener"><span class="nm">Runway</span><span class="use">Pro AI video editing</span></a><a class="tile" href="https://labs.google" target="_blank" rel="noopener"><span class="nm">Flow</span><span class="use">Cinematic scenes by Google</span></a><a class="tile" href="https://midjourney.com" target="_blank" rel="noopener"><span class="nm">Midjourney</span><span class="use">Best-in-class images</span></a></div></section><section id="voice"><div class="head"><div class="head-top"><h2>Voice &amp; audio</h2><span class="rule"></span><span class="n">6</span></div><p class="kind">Make speech and music</p></div><div class="grid"><a class="tile" href="https://github.com/openai/whisper" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Whisper</span><span class="use">Free speech to text</span></a><a class="tile" href="https://elevenlabs.io" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">ElevenLabs</span><span class="use">Lifelike text to speech</span></a><a class="tile" href="https://deepgram.com" target="_blank" rel="noopener"><span class="nm">Deepgram</span><span class="use">Fast transcription API</span></a><a class="tile" href="https://suno.com" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Suno</span><span class="use">Full songs from a prompt</span></a><a class="tile" href="https://murf.ai" target="_blank" rel="noopener"><span class="nm">Murf</span><span class="use">Voiceovers for videos</span></a><a class="tile" href="https://cartesia.ai" target="_blank" rel="noopener"><span class="free">free</span><span class="nm">Cartesia</span><span class="use">Low-latency voice API</span></a></div></section></div>
+ </main>
+ <footer id="foot"></footer>
 </div>
-<nav class="ladder" id="ladder" aria-label="Quick jump to shelf"></nav>
+<nav class="ladder" id="ladder" aria-label="Jump to a shelf"></nav>
 
-<div class="ovl" id="ovl" role="dialog" aria-modal="true" aria-label="Open-source alternatives">
+<div class="ovl" id="ovl" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
   <div class="sheet" id="sheet"></div>
 </div>
 
 <script>
 const SEED = {"updated":"2026-08-20","categories":[{"slug":"ides","name":"Agentic IDEs","kind":"Editors where the AI does the work","lad":"Ag","tools":[{"name":"Antigravity","domain":"antigravity.google","free":true,"icon":"","use":"Google's agentic editor","desc":"Google's free agentic editor. Gemini agents plan, write and verify code across editor, terminal and browser.","alts":[{"name":"Zed","domain":"zed.dev","note":"Open editor, AI built in"},{"name":"Cline","domain":"cline.bot","note":"Agent in VS Code","icon":"cline"}]},{"name":"Cursor","domain":"cursor.com","free":true,"icon":"","use":"AI-first code editor","desc":"The AI code editor most developers reach for first. Chat with your whole codebase.","alts":[{"name":"Zed","domain":"zed.dev","note":"Open editor, AI built in"},{"name":"Continue","domain":"continue.dev","note":"Open IDE copilot"},{"name":"Cline","domain":"cline.bot","note":"Agent in VS Code","icon":"cline"}]},{"name":"Windsurf","domain":"windsurf.com","free":true,"icon":"","use":"Agentic code editor","desc":"An editor where the AI carries multi-step tasks across your project on its own.","alts":[{"name":"Zed","domain":"zed.dev","note":"Open editor, AI built in"},{"name":"Continue","domain":"continue.dev","note":"Open IDE copilot"}]},{"name":"Kiro","domain":"kiro.dev","free":true,"icon":"","use":"AWS spec-driven IDE","desc":"AWS built this one around specs. Write what you want, agents keep the code true to it."},{"name":"Trae","domain":"trae.ai","free":true,"icon":"trae","use":"ByteDance's free AI IDE","desc":"ByteDance's AI editor with a proper agent mode. Generous free tier."},{"name":"Firebase Studio","domain":"firebase.studio","free":true,"icon":"firebase","use":"Cloud IDE, app from a prompt","desc":"Google's free cloud editor. Describe an app and agents scaffold, build and deploy it."}]},{"slug":"plugins","name":"AI plugins","kind":"Extend Claude, ChatGPT and agents","lad":"AI","tools":[{"name":"MCP Servers","domain":"modelcontextprotocol.io","free":true,"icon":"","use":"The plugin standard for AI apps","desc":"The open standard that lets AI apps like Claude plug into your tools.","href":"https://github.com/modelcontextprotocol/servers","oss":true,"repo":"https://github.com/modelcontextprotocol/servers"},{"name":"Smithery","domain":"smithery.ai","free":true,"icon":"","use":"MCP server registry","desc":"An app store of ready-made MCP plugins for AI assistants."},{"name":"Composio","domain":"composio.dev","free":true,"icon":"","use":"250+ tool integrations","desc":"Wire your agent into Gmail, Slack, Notion and 250 other apps."},{"name":"n8n","domain":"n8n.io","free":true,"icon":"n8n","use":"Automation with AI nodes","desc":"Drag-and-drop automation you can host yourself. Zapier, without the bill.","oss":true,"repo":"https://github.com/n8n-io/n8n"},{"name":"Dify","domain":"dify.ai","free":true,"icon":"","use":"Open LLM app platform","desc":"Build AI apps and chatbots visually. Open source.","oss":true,"repo":"https://github.com/langgenius/dify"},{"name":"Flowise","domain":"flowiseai.com","free":true,"icon":"","use":"Drag-drop agent builder","desc":"Boxes and arrows in, a working AI agent out. Open source.","oss":true,"repo":"https://github.com/FlowiseAI/Flowise"},{"name":"Langflow","domain":"langflow.org","free":true,"icon":"langflow","use":"Visual agent builder","desc":"Build AI agents by dragging blocks. No code, open source.","oss":true,"repo":"https://github.com/langflow-ai/langflow"},{"name":"Activepieces","domain":"activepieces.com","free":true,"icon":"","use":"Open Zapier alternative","desc":"Connect your apps and drop AI into any step. An open Zapier.","oss":true,"repo":"https://github.com/activepieces/activepieces"},{"name":"OpenRouter","domain":"openrouter.ai","free":true,"icon":"","use":"Every AI model, one API","desc":"One API key for ChatGPT, Claude, Gemini and 400 more models. Some are free."}]},{"slug":"assistants","name":"Assistants","kind":"Ask anything, get answers","lad":"As","tools":[{"name":"ChatGPT","domain":"chatgpt.com","free":true,"icon":"","use":"Creativity, writing, everyday help","desc":"The one everyone knows. Ask it anything and it writes, plans and explains.","offer":"ChatGPT Go free for a year on Airtel","alts":[{"name":"Open WebUI","domain":"openwebui.com","note":"Self-hosted chat UI"},{"name":"LibreChat","domain":"librechat.ai","note":"Multi-model chat"},{"name":"Jan","domain":"jan.ai","note":"Offline desktop AI"}]},{"name":"Claude","domain":"claude.ai","free":true,"icon":"claude","use":"Complex coding, deep reasoning","desc":"The strongest model for serious code and long, careful thinking.","alts":[{"name":"LibreChat","domain":"librechat.ai","note":"Multi-model chat"},{"name":"Open WebUI","domain":"openwebui.com","note":"Self-hosted chat UI"}]},{"name":"Gemini","domain":"gemini.google.com","free":true,"icon":"googlegemini","use":"Images, multimodal, huge context","desc":"Google's AI. Makes images, reads huge files, lives inside Gmail and Docs.","offer":"Google AI Pro free for 18 months on Jio 5G plans above Rs 349","alts":[{"name":"Open WebUI","domain":"openwebui.com","note":"Self-hosted chat UI"},{"name":"LibreChat","domain":"librechat.ai","note":"Multi-model chat"}]},{"name":"DeepSeek","domain":"deepseek.com","free":true,"icon":"deepseek","use":"Math + reasoning, open weights","desc":"Free Chinese lab that trades blows with the paid giants at math and logic.","oss":true,"repo":"https://github.com/deepseek-ai"},{"name":"Perplexity","domain":"perplexity.ai","free":true,"icon":"perplexity","use":"Research with citations","desc":"A search engine that answers in plain sentences and shows every source.","offer":"Perplexity Pro free for a year on Airtel","alts":[{"name":"Perplexica","domain":"github.com","note":"Open AI search engine"},{"name":"SearXNG","domain":"docs.searxng.org","note":"Private meta-search","icon":"searxng"}]},{"name":"Grok","domain":"grok.com","free":true,"icon":"","use":"Real-time X knowledge","desc":"X's AI. Knows what the internet is saying right now."},{"name":"Mistral","domain":"mistral.ai","free":true,"icon":"mistralai","use":"Open European models","desc":"French lab with fast models you can download and run on your own machine.","oss":true,"repo":"https://github.com/mistralai"},{"name":"Ollama","domain":"ollama.com","free":true,"icon":"ollama","use":"Run AI models locally","desc":"One command and ChatGPT-class models run on your own computer. Free.","oss":true,"repo":"https://github.com/ollama/ollama"}]},{"slug":"stack","name":"Builder stack","kind":"What we actually build with","lad":"Bu","tools":[{"name":"GitHub","domain":"github.com","free":true,"icon":"github","use":"Code hosting","desc":"Where the world keeps its code.","alts":[{"name":"Gitea","domain":"about.gitea.com","note":"Lightweight self-host git","icon":"gitea"},{"name":"Forgejo","domain":"forgejo.org","note":"Community Gitea fork","icon":"forgejo"},{"name":"GitLab CE","domain":"gitlab.com","note":"Open-core DevOps","icon":"gitlab"}]},{"name":"Supabase","domain":"supabase.com","free":true,"icon":"supabase","use":"Postgres backend","desc":"A whole backend from one dashboard. Database, login, storage.","oss":true,"repo":"https://github.com/supabase/supabase","alts":[{"name":"Appwrite","domain":"appwrite.io","note":"Open backend platform","icon":"appwrite"},{"name":"PocketBase","domain":"pocketbase.io","note":"One-file backend","icon":"pocketbase"},{"name":"Nhost","domain":"nhost.io","note":"GraphQL backend","icon":"nhost"}]},{"name":"Postman","domain":"postman.com","free":true,"icon":"postman","use":"API testing","desc":"Test your APIs by clicking around instead of writing scripts.","alts":[{"name":"Bruno","domain":"usebruno.com","note":"Offline API client","icon":"bruno"},{"name":"Hoppscotch","domain":"hoppscotch.io","note":"Web API client","icon":"hoppscotch"}]},{"name":"Expo","domain":"expo.dev","free":true,"icon":"expo","use":"React Native builds","desc":"One codebase, real iPhone and Android apps.","oss":true,"repo":"https://github.com/expo/expo"},{"name":"Replit","domain":"replit.com","free":true,"icon":"replit","use":"Cloud IDE + hosting","desc":"Write, run and host projects without leaving the browser.","alts":[{"name":"code-server","domain":"coder.com","note":"VS Code in your browser","icon":"coder"},{"name":"DevPod","domain":"devpod.sh","note":"Open dev environments"}]},{"name":"Bubble","domain":"bubble.io","free":true,"icon":"","use":"No-code web apps","desc":"Real web apps, dragged and dropped. No code.","alts":[{"name":"Budibase","domain":"budibase.com","note":"Open low-code apps","icon":"budibase"},{"name":"Appsmith","domain":"appsmith.com","note":"Open internal tools","icon":"appsmith"},{"name":"ToolJet","domain":"tooljet.com","note":"Open app builder"}]},{"name":"PostHog","domain":"posthog.com","free":true,"icon":"posthog","use":"Product analytics","desc":"See what people actually do inside your product.","oss":true,"repo":"https://github.com/PostHog/posthog","alts":[{"name":"Umami","domain":"umami.is","note":"Simple web analytics","icon":"umami"},{"name":"Matomo","domain":"matomo.org","note":"Full analytics suite","icon":"matomo"},{"name":"Plausible","domain":"plausible.io","note":"Privacy-first analytics","icon":"plausibleanalytics"}]},{"name":"Resend","domain":"resend.com","free":true,"icon":"resend","use":"Email API","desc":"Email from your app in three lines of code.","alts":[{"name":"Postal","domain":"postalserver.io","note":"Self-hosted mail server"},{"name":"Listmonk","domain":"listmonk.app","note":"Newsletter + campaigns","icon":"listmonk"}]},{"name":"New Relic","domain":"newrelic.com","free":true,"icon":"newrelic","use":"App monitoring","desc":"Watch your app's health. Errors, speed, crashes.","alts":[{"name":"SigNoz","domain":"signoz.io","note":"Open observability"},{"name":"Grafana","domain":"grafana.com","note":"Dashboards + traces","icon":"grafana"},{"name":"OpenObserve","domain":"openobserve.ai","note":"Logs at 140x less cost"}]},{"name":"CodeRabbit","domain":"coderabbit.ai","free":true,"icon":"","use":"AI pull-request reviews","desc":"AI reviews every pull request before a human has to.","alts":[{"name":"PR-Agent","domain":"qodo.ai","note":"Qodo's open PR reviewer"}]},{"name":"Notion","domain":"notion.so","free":true,"icon":"notion","use":"Docs and wikis","desc":"Docs, wikis and databases in one workspace.","alts":[{"name":"AppFlowy","domain":"appflowy.io","note":"Open Notion alternative"},{"name":"AFFiNE","domain":"affine.pro","note":"Docs + whiteboard","icon":"affine"},{"name":"Outline","domain":"getoutline.com","note":"Team knowledge base"}]},{"name":"Slack","domain":"slack.com","free":true,"icon":"","use":"Team chat","desc":"Where teams talk.","alts":[{"name":"Mattermost","domain":"mattermost.com","note":"Self-hosted team chat","icon":"mattermost"},{"name":"Rocket.Chat","domain":"rocket.chat","note":"Open team chat","icon":"rocketdotchat"},{"name":"Zulip","domain":"zulip.com","note":"Threaded open chat","icon":"zulip"}]},{"name":"Whimsical","domain":"whimsical.com","free":true,"icon":"","use":"Diagrams and wireframes","desc":"Flowcharts, wireframes and mind maps in minutes.","alts":[{"name":"Excalidraw","domain":"excalidraw.com","note":"Hand-drawn diagrams","icon":"excalidraw"},{"name":"draw.io","domain":"drawio.com","note":"Classic diagramming","icon":"diagramsdotnet"}]},{"name":"Google AI Studio","domain":"aistudio.google.com","free":true,"icon":"","use":"Gemini API playground","desc":"Try Gemini free and walk out with an API key.","alts":[{"name":"Open WebUI","domain":"openwebui.com","note":"Self-hosted chat UI"}]},{"name":"Otter","domain":"otter.ai","free":true,"icon":"","use":"Meeting notes","desc":"Sits in your meetings and writes the notes.","alts":[{"name":"Whisper","domain":"github.com","note":"OpenAI's open STT"}]},{"name":"Mercury","domain":"mercury.com","free":true,"icon":"","use":"Startup banking","desc":"Banking built for startups. No fees."},{"name":"Coolify","domain":"coolify.io","free":true,"icon":"coolify","use":"Self-host your apps","desc":"Push your code to your own server with one click. A free Heroku you control.","oss":true,"repo":"https://github.com/coollabsio/coolify"},{"name":"Uptime Kuma","domain":"uptime.kuma.pet","free":true,"icon":"uptimekuma","use":"Is-my-site-up monitoring","desc":"A tidy dashboard that pings your site and rings you when it goes down.","oss":true,"repo":"https://github.com/louislam/uptime-kuma"},{"name":"NocoDB","domain":"nocodb.com","free":true,"icon":"","use":"Open Airtable alternative","desc":"Point it at any database and get a friendly Airtable-style spreadsheet.","oss":true,"repo":"https://github.com/nocodb/nocodb"},{"name":"Strapi","domain":"strapi.io","free":true,"icon":"strapi","use":"Headless CMS","desc":"A clean admin panel for your website content. Open source.","oss":true,"repo":"https://github.com/strapi/strapi"},{"name":"Capacities","domain":"capacities.io","free":true,"icon":"","use":"Notes as a knowledge graph","desc":"A notebook where every note becomes a connected object. Our daily driver for notes.","href":"https://capacities.io/"},{"name":"Obsidian","domain":"obsidian.md","free":true,"icon":"obsidian","use":"Local-first linked notes","desc":"Markdown notes on your own device, linked like a second brain. Free for personal use."},{"name":"LaunchDarkly","domain":"launchdarkly.com","free":true,"icon":"","use":"Feature flags","desc":"Flip features on and off without redeploying.","alts":[{"name":"Unleash","domain":"getunleash.io","note":"Open feature flags"},{"name":"Flagsmith","domain":"flagsmith.com","note":"Flags + remote config"},{"name":"GrowthBook","domain":"growthbook.io","note":"Flags + A/B tests"}]}]},{"slug":"coding","name":"Coding","kind":"Write and fix code","lad":"Co","tools":[{"name":"Cline","domain":"cline.bot","free":true,"icon":"","use":"Open-source agent in VS Code","desc":"A free VS Code extension that writes and edits code like a teammate.","oss":true,"repo":"https://github.com/cline/cline"},{"name":"Copilot","domain":"github.com","free":true,"icon":"githubcopilot","use":"Autocomplete in your editor","desc":"GitHub's AI finishes your code while you type.","alts":[{"name":"Continue","domain":"continue.dev","note":"Open IDE copilot"},{"name":"Cline","domain":"cline.bot","note":"Agent in VS Code","icon":"cline"},{"name":"Aider","domain":"aider.chat","note":"Terminal pair programmer"}]},{"name":"Bolt","domain":"bolt.new","free":true,"icon":"","use":"Full apps in the browser","desc":"Type an idea, watch a working web app appear in your browser.","alts":[{"name":"bolt.diy","domain":"bolt.diy","note":"Bolt's own open build"},{"name":"OpenHands","domain":"all-hands.dev","note":"Autonomous dev agent"}]},{"name":"Lovable","domain":"lovable.dev","free":true,"icon":"","use":"Idea to web app","desc":"Describe the app in plain English. It builds it and puts it online.","alts":[{"name":"Dyad","domain":"dyad.sh","note":"Local AI app builder"},{"name":"bolt.diy","domain":"bolt.diy","note":"Open in-browser builder"}]},{"name":"v0","domain":"v0.app","free":true,"icon":"vercel","use":"UI from a prompt","desc":"Vercel's builder. Describe a screen, get production-ready UI code.","alts":[{"name":"Onlook","domain":"onlook.com","note":"Open design-to-code"}]},{"name":"OpenCode","domain":"opencode.ai","free":true,"icon":"opencode","use":"Open terminal coding agent","desc":"A free, open coding agent for your terminal.","oss":true,"repo":"https://github.com/sst/opencode"},{"name":"Gemini CLI","domain":"gemini.google.com","free":true,"icon":"googlegemini","use":"Google's terminal agent, free","desc":"Google's coding agent for the terminal. Free and open source.","href":"https://github.com/google-gemini/gemini-cli","oss":true,"repo":"https://github.com/google-gemini/gemini-cli"},{"name":"Codex CLI","domain":"openai.com","free":true,"icon":"","use":"OpenAI's terminal agent","desc":"OpenAI's coding agent for the terminal. Open source.","href":"https://github.com/openai/codex","oss":true,"repo":"https://github.com/openai/codex"},{"name":"Claude Code","domain":"claude.com","free":false,"icon":"claude","use":"Terminal coding agent","desc":"Claude living in your terminal. It edits files, runs commands, ships features.","alts":[{"name":"OpenHands","domain":"all-hands.dev","note":"Autonomous dev agent"},{"name":"Aider","domain":"aider.chat","note":"Terminal pair programmer"},{"name":"Goose","domain":"github.com","note":"Block's open agent"}]}]},{"slug":"ideas","name":"Ideas","kind":"Problems worth building, straight from real companies","lad":"Id","tools":[{"name":"YC Requests","domain":"ycombinator.com","free":true,"icon":"ycombinator","use":"Ideas YC wants built","desc":"Y Combinator's standing list of startups they wish someone would build.","href":"https://www.ycombinator.com/rfs"},{"name":"Fix My Itch","domain":"razorpay.com","free":true,"icon":"razorpay","use":"Real problems, India fintech","desc":"Razorpay's list of real problems waiting for Indian founders.","href":"https://razorpay.com/m/fix-my-itch/"},{"name":"a16z Big Ideas","domain":"a16z.com","free":true,"icon":"","use":"What a16z sees coming","desc":"What one of the world's biggest VC firms expects to happen next.","href":"https://a16z.com/big-ideas-in-tech-2025/"},{"name":"AI Grant","domain":"aigrant.org","free":true,"icon":"","use":"Funded open AI ideas","desc":"Nat Friedman and Daniel Gross fund these open AI ideas.","href":"https://aigrant.org/"},{"name":"Smart India Hackathon","domain":"sih.gov.in","free":true,"icon":"","use":"Govt problem statements","desc":"Real problem statements straight from Indian ministries.","href":"https://www.sih.gov.in/"},{"name":"AIM Challenges","domain":"aim.gov.in","free":true,"icon":"","use":"Atal innovation missions","desc":"National innovation challenges from the Atal Innovation Mission.","href":"https://aim.gov.in/"}]},{"slug":"identity","name":"Identity & KYC","kind":"Check someone is a real person","lad":"KY","tools":[{"name":"Didit","domain":"didit.me","free":true,"icon":"","use":"Free ID verification","desc":"Checks IDs and faces. The core checks cost nothing, forever."},{"name":"Persona","domain":"withpersona.com","free":false,"icon":"","use":"KYC building blocks","desc":"The identity building blocks behind a lot of well-known startups."},{"name":"HyperVerge","domain":"hyperverge.co","free":false,"icon":"","use":"India-focused KYC","desc":"KYC tuned for Indian documents. Aadhaar, PAN, the lot."},{"name":"IDfy","domain":"idfy.com","free":false,"icon":"","use":"Background checks, India","desc":"Background checks and document verification for Indian businesses."},{"name":"Signzy","domain":"signzy.com","free":false,"icon":"","use":"Bank-grade onboarding","desc":"Onboarding rails trusted by Indian banks."},{"name":"Sumsub","domain":"sumsub.com","free":false,"icon":"","use":"Global KYC and AML","desc":"Verify users in any country from one dashboard."},{"name":"Onfido","domain":"onfido.com","free":false,"icon":"","use":"Document + selfie checks","desc":"Selfie meets ID document, matched in seconds."},{"name":"Veriff","domain":"veriff.com","free":false,"icon":"","use":"Fast identity checks","desc":"Video-based identity checks, done fast."}]},{"slug":"otp","name":"OTP & messaging","kind":"Send OTP codes and SMS","lad":"OT","tools":[{"name":"Keycloak","domain":"keycloak.org","free":true,"icon":"keycloak","use":"Self-hosted login + OTP","desc":"Run your own login system. Passwords, OTP, SSO. Free forever.","oss":true,"repo":"https://github.com/keycloak/keycloak"},{"name":"Firebase Auth","domain":"firebase.google.com","free":false,"icon":"firebase","use":"Phone OTP login (SMS billed)","desc":"Google's login kit. Phone OTP, email and social sign-in. The SMS is billed.","alts":[{"name":"SuperTokens","domain":"supertokens.com","note":"Open auth with OTP"},{"name":"Keycloak","domain":"keycloak.org","note":"Enterprise-grade SSO"},{"name":"Ory","domain":"ory.sh","note":"API-first open auth","icon":"ory"}]},{"name":"Fast2SMS","domain":"fast2sms.com","free":false,"icon":"","use":"Cheap Indian SMS","desc":"SMS across India at rock-bottom rates."},{"name":"2Factor","domain":"2factor.in","free":false,"icon":"","use":"Indian OTP API","desc":"A simple Indian API for OTP over SMS."},{"name":"MSG91","domain":"msg91.com","free":false,"icon":"","use":"OTP + WhatsApp, India","desc":"OTP, SMS and WhatsApp for Indian businesses."},{"name":"Plivo","domain":"plivo.com","free":false,"icon":"","use":"Global SMS and voice","desc":"SMS and calls worldwide, from code."},{"name":"Twilio","domain":"twilio.com","free":false,"icon":"","use":"The default SMS API","desc":"The default answer to sending SMS from an app."},{"name":"Vonage","domain":"vonage.com","free":false,"icon":"vonage","use":"SMS and verify APIs","desc":"SMS, voice and verification APIs."},{"name":"Infobip","domain":"infobip.com","free":false,"icon":"","use":"Omnichannel messaging","desc":"SMS, WhatsApp, email and more behind one API."}]},{"slug":"payments","name":"Payments","kind":"Get paid, even before you register a company","lad":"Pa","tools":[{"name":"PhonePe PG","domain":"phonepe.com","free":true,"icon":"phonepe","use":"Zero-fee UPI gateway","desc":"UPI payments with zero transaction fees, whatever your size.","href":"https://www.phonepe.com/business-solutions/payment-gateway/","offer":"Gateway fee is FREE right now, limited period. Normally 1.99%","img":"assets/phonepe-offer.png"},{"name":"Razorpay","domain":"razorpay.com","free":false,"icon":"razorpay","use":"Indian payments, UPI + cards","desc":"How Indian startups take payments. Signs up unregistered individuals and freelancers too."},{"name":"Cashfree","domain":"cashfree.com","free":false,"icon":"","use":"Gateway + instant payouts","desc":"Indian gateway known for instant settlements and painless onboarding."},{"name":"Instamojo","domain":"instamojo.com","free":false,"icon":"","use":"Payment links for individuals","desc":"Share a link, get paid. Built for individuals, no company paperwork."},{"name":"Lemon Squeezy","domain":"lemonsqueezy.com","free":false,"icon":"lemonsqueezy","use":"Sell globally, no company needed","desc":"Sell software worldwide without incorporating. They act as the merchant and handle tax."},{"name":"Stripe","domain":"stripe.com","free":false,"icon":"stripe","use":"Global cards + subscriptions","desc":"The global standard for taking cards and subscriptions online."}]},{"slug":"programs","name":"Startup programs","kind":"Free credits and perks for founders","lad":"St","tools":[{"name":"AWS Activate","domain":"aws.amazon.com","free":true,"icon":"","use":"AWS cloud credits","desc":"Free AWS credits for startups. Up to a hundred thousand dollars.","href":"https://aws.amazon.com/startups"},{"name":"Google for Startups","domain":"cloud.google.com","free":true,"icon":"googlecloud","use":"GCP credits + Workspace","desc":"Google Cloud credits plus Workspace, free for young startups.","href":"https://cloud.google.com/startup/apply"},{"name":"NVIDIA Inception","domain":"nvidia.com","free":true,"icon":"nvidia","use":"Path to $100K AWS credits","desc":"NVIDIA's startup club. GPU perks, training and partner credits.","href":"https://www.nvidia.com/en-in/startups/"},{"name":"MongoDB for Startups","domain":"mongodb.com","free":true,"icon":"mongodb","use":"Atlas credits + advisor","desc":"Free database credits and a technical advisor on call.","href":"https://www.mongodb.com/startups"},{"name":"Claude for Startups","domain":"anthropic.com","free":true,"icon":"claude","use":"Claude API credits","desc":"Free Claude API credits for teams building AI products.","href":"https://www.anthropic.com/startups"},{"name":"OpenAI Startups","domain":"openai.com","free":true,"icon":"","use":"Builder community + credits","desc":"OpenAI's community and credits for builders.","href":"https://openai.com/startups"},{"name":"ElevenLabs Grants","domain":"elevenlabs.io","free":true,"icon":"elevenlabs","use":"Voice API grant","desc":"Free voice AI credits for early-stage teams.","href":"https://elevenlabs.io/startup-grants"},{"name":"Sentry for Startups","domain":"sentry.io","free":true,"icon":"sentry","use":"$5K monitoring credits","desc":"Five thousand dollars of error tracking, free.","href":"https://sentry.io/for/startups/"},{"name":"Cloudflare Startups","domain":"cloudflare.com","free":true,"icon":"cloudflare","use":"Product credits","desc":"Credits across Cloudflare's whole product line.","href":"https://www.cloudflare.com/forstartups/"},{"name":"GitLab for Startups","domain":"gitlab.com","free":true,"icon":"gitlab","use":"Free GitLab Ultimate","desc":"GitLab's top plan, free for qualifying startups.","href":"https://about.gitlab.com/solutions/startups/"},{"name":"Retool for Startups","domain":"retool.com","free":true,"icon":"","use":"Internal-tool credits","desc":"Credits to stand up internal dashboards fast.","href":"https://retool.com/startups"},{"name":"Persona Startups","domain":"withpersona.com","free":true,"icon":"","use":"KYC + KYB free tier","desc":"A free identity-verification tier for startups.","href":"https://help.withpersona.com/articles/1XNnqukfZY9VamF2e7jkuJ/"},{"name":"Signzy Startups","domain":"signzy.com","free":true,"icon":"","use":"KYC + KYB APIs, India","desc":"Startup pricing on bank-grade Indian KYC APIs.","href":"https://www.signzy.com/fintech-apis/startups"},{"name":"AssemblyAI Startups","domain":"assemblyai.com","free":true,"icon":"","use":"Speech-to-text credits","desc":"Free speech-to-text credits for voice products.","href":"https://www.assemblyai.com/contact/startup-program"},{"name":"Arize for Startups","domain":"arize.com","free":true,"icon":"","use":"LLM observability + evals","desc":"Free tooling that catches your AI's mistakes before users do.","href":"https://arize.com/arize-for-startups/"},{"name":"Perplexity Startups","domain":"perplexity.ai","free":true,"icon":"perplexity","use":"API credits + Pro","desc":"API credits and Pro seats for startups.","href":"https://www.perplexity.ai/startups"},{"name":"DocSend Startups","domain":"dropbox.com","free":true,"icon":"dropbox","use":"90% off deck sharing","desc":"Ninety percent off the tool investors expect your deck on.","href":"https://experience.dropbox.com/docsend/startups"},{"name":"Infobip Tribe","domain":"infobip.com","free":true,"icon":"","use":"Messaging credits","desc":"Free messaging credits for startups.","href":"https://www.infobip.com/startup"},{"name":"Google Ads credit","domain":"ads.google.com","free":true,"icon":"googleads","use":"Ad credit after first spend","desc":"Spend a little on ads and Google matches it with credit.","href":"https://ads.google.com/aw/signup"},{"name":"Stripe Atlas","domain":"stripe.com","free":false,"icon":"stripe","use":"US inc + partner perks","desc":"A US company, incorporated from anywhere. Five hundred dollars, perks included.","href":"https://stripe.com/atlas"},{"name":"Azure for Students","domain":"azure.microsoft.com","free":true,"icon":"","use":"$100 Azure credit","desc":"A hundred dollars of Microsoft cloud, free with a student email.","href":"https://azure.microsoft.com/free/students"}]},{"slug":"video","name":"Video & image","kind":"Make pictures and videos","lad":"Vi","tools":[{"name":"Krea","domain":"krea.ai","free":true,"icon":"","use":"Real-time image playground","desc":"Sketch rough shapes and watch them become finished images in real time.","alts":[{"name":"ComfyUI","domain":"comfy.org","note":"Node-based SD and Flux"},{"name":"Flux","domain":"bfl.ai","note":"Open-weight image model"}]},{"name":"Leonardo","domain":"leonardo.ai","free":true,"icon":"","use":"Game art and illustrations","desc":"Game art, characters and illustrations from a text prompt.","alts":[{"name":"ComfyUI","domain":"comfy.org","note":"Node-based SD and Flux"},{"name":"Stable Diffusion","domain":"stability.ai","note":"Open image models"}]},{"name":"Kling","domain":"klingai.com","free":true,"icon":"","use":"Text to video","desc":"A sentence or a photo in, a short video clip out.","alts":[{"name":"Wan","domain":"wan.video","note":"Alibaba's open video model"},{"name":"HunyuanVideo","domain":"hunyuan.tencent.com","note":"Tencent's open video model"}]},{"name":"Freepik","domain":"freepik.com","free":true,"icon":"freepik","use":"AI plus stock assets","desc":"Stock photos, icons and AI image tools under one roof."},{"name":"ComfyUI","domain":"comfy.org","free":true,"icon":"","use":"Node-based image + video studio","desc":"A free visual studio. Wire boxes together to make images and video.","oss":true,"repo":"https://github.com/comfyanonymous/ComfyUI"},{"name":"SD WebUI","domain":"github.com","free":true,"icon":"","use":"Classic image generation UI","desc":"The classic free tool that started home image generation.","href":"https://github.com/AUTOMATIC1111/stable-diffusion-webui","oss":true,"repo":"https://github.com/AUTOMATIC1111/stable-diffusion-webui"},{"name":"Pixabay","domain":"pixabay.com","free":true,"icon":"pixabay","use":"Free stock photos + video","desc":"Millions of free photos, videos and music tracks. No attribution needed."},{"name":"Seedance","domain":"seed.bytedance.com","free":true,"icon":"bytedance","use":"ByteDance's video model","desc":"ByteDance's top-ranked video model. Try it free inside Dreamina or BytePlus.","href":"https://seed.bytedance.com/en/seedance"},{"name":"Runway","domain":"runwayml.com","free":false,"icon":"","use":"Pro AI video editing","desc":"Film-grade AI video editing. Remove objects, generate whole scenes.","alts":[{"name":"Wan","domain":"wan.video","note":"Alibaba's open video model"},{"name":"LTX-Video","domain":"ltxv.video","note":"Fast open video model"}]},{"name":"Flow","domain":"labs.google","free":false,"icon":"","use":"Cinematic scenes by Google","desc":"Google's filmmaking tool for cinematic AI clips.","offer":"Comes with Google AI Pro, free for 18 months on Jio 5G","alts":[{"name":"HunyuanVideo","domain":"hunyuan.tencent.com","note":"Tencent's open video model"}]},{"name":"Midjourney","domain":"midjourney.com","free":false,"icon":"","use":"Best-in-class images","desc":"Still the benchmark for beautiful images.","alts":[{"name":"ComfyUI","domain":"comfy.org","note":"Node-based SD and Flux"},{"name":"Flux","domain":"bfl.ai","note":"Open-weight image model"},{"name":"Stable Diffusion","domain":"stability.ai","note":"Open image models"}]}]},{"slug":"voice","name":"Voice & audio","kind":"Make speech and music","lad":"Vo","tools":[{"name":"Whisper","domain":"openai.com","free":true,"icon":"","use":"Free speech to text","desc":"OpenAI's free model. Feed it any recording, get accurate text back.","href":"https://github.com/openai/whisper","oss":true,"repo":"https://github.com/openai/whisper"},{"name":"ElevenLabs","domain":"elevenlabs.io","free":true,"icon":"elevenlabs","use":"Lifelike text to speech","desc":"Text in, a voice you cannot tell from human out.","alts":[{"name":"F5-TTS","domain":"github.com","note":"Open voice cloning"},{"name":"Piper","domain":"github.com","note":"Fast local TTS"},{"name":"OpenVoice","domain":"github.com","note":"Instant voice clone"}]},{"name":"Deepgram","domain":"deepgram.com","free":false,"icon":"","use":"Fast transcription API","desc":"Speech to text at production speed, built for apps and call centers.","alts":[{"name":"Whisper","domain":"github.com","note":"OpenAI's open STT"},{"name":"Vosk","domain":"alphacephei.com","note":"Offline speech recognition"}]},{"name":"Suno","domain":"suno.com","free":true,"icon":"","use":"Full songs from a prompt","desc":"Type a mood, get a finished song with vocals.","alts":[{"name":"MusicGen","domain":"audiocraft.metademolab.com","note":"Meta's open music model"},{"name":"ACE-Step","domain":"acestep.org","note":"Open music generation"}]},{"name":"Murf","domain":"murf.ai","free":false,"icon":"","use":"Voiceovers for videos","desc":"Studio voiceovers for videos and ads without booking a studio.","alts":[{"name":"F5-TTS","domain":"github.com","note":"Open voice cloning"},{"name":"Piper","domain":"github.com","note":"Fast local TTS"}]},{"name":"Cartesia","domain":"cartesia.ai","free":true,"icon":"","use":"Low-latency voice API","desc":"Natural voices fast enough for live phone agents.","alts":[{"name":"Piper","domain":"github.com","note":"Fast local TTS"}]}]}]};
+
 const DATA_BASE = "./data";   // swap for your bucket URL on deploy
 
-const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* also escapes ' — data-src is written inside a single-quoted attribute */
+const esc = s => String(s).replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const HUES = [212, 258, 340, 18, 150, 42];
 const FORK = '<svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"/></svg>';
 
@@ -284,24 +431,28 @@ const FORK = '<svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor
 // Leave "" and the page still works, just with rougher icons.
 const LOGO_DEV_KEY = "";
 
-// Real brand logos, best source first:
-//  1. logo.dev      — the real company logo, fetched live by domain
-//  2. Simple Icons  — official brand SVG, free, no key
-//  3. site icon     — the company's own icon
-//  4. letter tile   — last resort only
+// Real brand logos, best source first. `min` is the smallest usable natural
+// width: favicon endpoints happily return a 16px generic globe for domains
+// they do not know, which used to sail through as a "successful" load and
+// render as a blurry grey blob at 44px.
 function sources(t){
   const s = [];
-  if (LOGO_DEV_KEY) s.push(`https://img.logo.dev/${t.domain}?token=${LOGO_DEV_KEY}&size=128&format=png&retina=true`);
-  if (t.icon)       s.push(`https://cdn.simpleicons.org/${t.icon}`);
-  s.push(`https://icons.duckduckgo.com/ip3/${t.domain}.ico`);
-  s.push(`https://www.google.com/s2/favicons?domain=${t.domain}&sz=128`);
+  if (LOGO_DEV_KEY) s.push({u:`https://img.logo.dev/${t.domain}?token=${LOGO_DEV_KEY}&size=128&format=png&retina=true`, min:32});
+  if (t.icon)       s.push({u:`https://cdn.simpleicons.org/${t.icon}`, min:0});
+  s.push({u:`https://icons.duckduckgo.com/ip3/${t.domain}.ico`, min:32});
+  s.push({u:`https://www.google.com/s2/favicons?domain=${t.domain}&sz=128`, min:32});
   return s;
 }
 
+let imgSeen = 0;
 function logoImg(t, cls){
   const hue = HUES[[...t.name].reduce((a,c)=>a+c.charCodeAt(0),0) % HUES.length];
   const src = sources(t);
-  return `<img class="${cls}" alt="" loading="lazy" src="${esc(src[0])}"
+  // the first screenful must not be lazy — it is the LCP
+  const eager = cls === "logo" && imgSeen++ < 12;
+  return `<img class="${cls}" alt="" decoding="async"
+       loading="${eager ? "eager" : "lazy"}"${eager ? ' fetchpriority="high"' : ''}
+       src="${esc(src[0].u)}"
        data-src='${esc(JSON.stringify(src))}' data-step="0"
        data-letter="${esc(t.name[0])}" data-hue="${hue}">`;
 }
@@ -312,115 +463,259 @@ function tile(t, slug){
   const key = slug + "/" + t.name;
   TOOLS[key] = t;
   const href = t.href || `https://${t.domain}`;
-  const hasOss = t.oss || (t.alts && t.alts.length);
-  return `<a class="tile" href="${esc(href)}" target="_blank" rel="noopener" data-info="${esc(key)}" aria-haspopup="dialog">
+  const hasAlts = t.alts && t.alts.length;
+  return `<a class="tile" href="${esc(href)}" target="_blank" rel="noopener"
+     data-info="${esc(key)}" aria-haspopup="dialog">
     ${t.free ? '<span class="free">free</span>' : ''}
-    ${hasOss ? `<span class="fork" title="${t.oss ? 'Open source' : 'Open-source alternatives inside'}">${FORK}</span>` : ''}
+    ${hasAlts ? `<span class="fork" role="img" aria-label="Has open-source alternatives">${FORK}</span>` : ''}
     ${logoImg(t, "logo")}
     <span class="nm">${esc(t.name)}</span>
     ${t.use ? `<span class="use">${esc(t.use)}</span>` : ''}
   </a>`;
 }
 
-// walk the source list on failure, letter tile only if every source misses
-document.addEventListener("error", e => {
-  const img = e.target;
-  if (!img.classList || !(img.classList.contains("logo") || img.classList.contains("mlogo"))) return;
+/* walk the source list; letter tile only when every source misses */
+function nextSource(img){
   if (!img.dataset.src) return;
   const list = JSON.parse(img.dataset.src);
   const next = +img.dataset.step + 1;
   if (next < list.length){
     img.dataset.step = next;
-    img.src = list[next];
+    img.src = list[next].u;
   } else {
     const d = document.createElement("div");
     d.className = "mono";
-    d.textContent = img.dataset.letter.toUpperCase();
+    d.textContent = (img.dataset.letter || "?").toUpperCase();
     d.style.background = `hsl(${img.dataset.hue} 32% 46%)`;
     img.replaceWith(d);
   }
+}
+const isLogo = img => img.classList &&
+  (img.classList.contains("logo") || img.classList.contains("mlogo") || img.classList.contains("alogo"));
+document.addEventListener("error", e => { if (isLogo(e.target)) nextSource(e.target); }, true);
+document.addEventListener("load", e => {
+  const img = e.target;
+  if (!isLogo(img) || !img.dataset.src) return;
+  const step = JSON.parse(img.dataset.src)[+img.dataset.step];
+  if (step && img.naturalWidth && img.naturalWidth < step.min) nextSource(img);
 }, true);
 
-let CATS = [], UPDATED = "", FILTER = "all", QUERY = "";
+let CATS = [], UPDATED = "", FILTER = "all", QUERY = "", TOTAL = 0, spy = null;
 
 function visible(t){
   if (FILTER === "oss"   && !t.oss) return false;
   if (FILTER === "cloud" &&  t.oss) return false;
   if (QUERY){
-    const hay = (t.name + " " + (t.use||"") + " " + t.domain + " " +
+    const hay = (t.name + " " + (t.use||"") + " " + (t.desc||"") + " " + t.domain + " " +
       (t.alts||[]).map(a => a.name).join(" ")).toLowerCase();
     if (!hay.includes(QUERY)) return false;
   }
   return true;
 }
 
+const FILTER_LABEL = {all:"", oss:"open-source", cloud:"hosted"};
+
 function render(){
   const cats = CATS
     .map(c => ({...c, tools: c.tools.filter(visible)}))
     .filter(c => c.tools.length);
+  const shown = cats.reduce((n,c) => n + c.tools.length, 0);
 
-  document.getElementById("main").innerHTML = cats.map(c => `
-    <section id="${esc(c.slug)}">
-      <div class="head">
-        <div class="head-top">
-          <h2>${esc(c.name)}</h2>
-          <span class="rule"></span>
-          <span class="n">${c.tools.length}</span>
+  const main = document.getElementById("main");
+
+  if (!shown){
+    // the old build rendered an empty <main> — a blank white page with no explanation
+    main.innerHTML = `
+      <div class="empty">
+        <b>Nothing on the shelf matches</b>
+        <p>No ${esc(FILTER_LABEL[FILTER] ? FILTER_LABEL[FILTER] + " " : "")}tool matches
+           ${QUERY ? `“${esc(QUERY)}”` : "this filter"}.<br>Try a shorter word, or clear the filters.</p>
+        <button type="button" id="reset">Show all ${TOTAL} tools</button>
+      </div>`;
+    document.getElementById("chips").innerHTML = "";
+    document.getElementById("ladder").innerHTML = "";
+  } else {
+    main.innerHTML = cats.map(c => `
+      <section id="${esc(c.slug)}" aria-labelledby="h-${esc(c.slug)}">
+        <div class="head">
+          <div class="head-top">
+            <h2 id="h-${esc(c.slug)}">${esc(c.name)}</h2>
+            <span class="rule" aria-hidden="true"></span>
+            <span class="n">${c.tools.length}<span class="vh"> tools</span></span>
+          </div>
+          <p class="kind">${esc(c.kind || "")}</p>
         </div>
-        <p class="kind">${esc(c.kind || "")}</p>
-      </div>
-      <div class="grid">${c.tools.map(t => tile(t, c.slug)).join("")}</div>
-    </section>`).join("");
+        <div class="grid">${c.tools.map(t => tile(t, c.slug)).join("")}</div>
+      </section>`).join("");
 
-  document.getElementById("chips").innerHTML =
-    cats.map(c => `<a href="#${esc(c.slug)}">${esc(c.name)}</a>`).join("");
+    document.getElementById("chips").innerHTML =
+      cats.map(c => `<a href="#${esc(c.slug)}">${esc(c.name)}</a>`).join("");
 
-  document.getElementById("ladder").innerHTML =
-    cats.map(c => `<a href="#${esc(c.slug)}" title="${esc(c.name)}" aria-label="${esc(c.name)}">${esc(c.lad || c.name.slice(0,2))}</a>`).join("");
+    document.getElementById("ladder").innerHTML =
+      cats.map(c => `<a href="#${esc(c.slug)}" data-full="${esc(c.name)}" aria-label="${esc(c.name)}">${esc(c.lad || c.name.slice(0,2))}</a>`).join("");
+  }
 
+  const t = UPDATED || "";
   document.getElementById("foot").innerHTML =
-    `<span>Updated ${esc(UPDATED || "—")}</span>` +
+    `<span>${TOTAL} tools · updated ${t ? `<time datetime="${esc(t)}">${esc(fmtDate(t))}</time>` : ""}</span>` +
     `<a href="https://www.proto-engineer.com/" target="_blank" rel="noopener">A Proto.Engineer project</a>` +
     `<a href="https://logo.dev" target="_blank" rel="noopener">Logos provided by Logo.dev</a>`;
 
-  const links = [...document.querySelectorAll(".chips a, .ladder a")];
-  const spy = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) links.forEach(l =>
-      l.setAttribute("aria-current", l.getAttribute("href") === "#" + e.target.id));
-  }), {rootMargin:"-15% 0px -70% 0px"});
-  document.querySelectorAll("section").forEach(s => spy.observe(s));
+  announce(shown, cats.length);
+  bindSpy();
+  syncChipFade();
 }
 
-/* search */
+function fmtDate(iso){
+  const d = new Date(iso + "T00:00:00");
+  return isNaN(d) ? iso : d.toLocaleDateString(undefined, {day:"numeric", month:"short", year:"numeric"});
+}
+
+let announceTimer;
+function announce(shown, groups){
+  clearTimeout(announceTimer);
+  announceTimer = setTimeout(() => {
+    document.getElementById("status").textContent =
+      shown ? `${shown} tool${shown === 1 ? "" : "s"} in ${groups} categor${groups === 1 ? "y" : "ies"}.`
+            : "No tools match. Filters can be cleared with the button on screen.";
+  }, 200);
+}
+
+/* one observer, rebuilt and DISCONNECTED on each render — the old code leaked
+   a fresh IntersectionObserver on every single keystroke */
+function bindSpy(){
+  if (spy) spy.disconnect();
+  const links = [...document.querySelectorAll(".chips a, .ladder a")];
+  if (!links.length) return;
+  spy = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    links.forEach(l => {
+      const on = l.getAttribute("href") === "#" + e.target.id;
+      l.setAttribute("aria-current", on);
+      if (on && l.parentElement.id === "chips") keepChipInView(l);
+    });
+  }), {rootMargin:"-15% 0px -70% 0px"});
+  document.querySelectorAll("main section").forEach(s => spy.observe(s));
+}
+
+/* the active chip used to scroll out of sight and stay there */
+function keepChipInView(a){
+  const rail = document.getElementById("chips");
+  const r = a.getBoundingClientRect(), b = rail.getBoundingClientRect();
+  if (r.left < b.left + 8 || r.right > b.right - 8)
+    rail.scrollTo({left: a.offsetLeft - rail.clientWidth / 2 + a.offsetWidth / 2,
+                   behavior: matchMedia("(prefers-reduced-motion:reduce)").matches ? "auto" : "smooth"});
+}
+
+/* tell people the chip rail scrolls, instead of just clipping it */
+const chipsEl = document.getElementById("chips"), railEl = document.getElementById("chipsRail");
+function syncChipFade(){
+  railEl.classList.toggle("more", chipsEl.scrollWidth > chipsEl.clientWidth + chipsEl.scrollLeft + 4);
+}
+chipsEl.addEventListener("scroll", syncChipFade, {passive:true});
+
+/* keep scroll-padding honest — the sticky bar is 60px on desktop but wraps to
+   125–154px on phones, so anchored headings used to land underneath it */
+const barEl = document.querySelector(".bar");
+const syncBar = () => document.documentElement.style.setProperty("--barh", barEl.offsetHeight + "px");
+new ResizeObserver(syncBar).observe(barEl);
+addEventListener("resize", () => { syncBar(); syncChipFade(); }, {passive:true});
+syncBar();
+
+/* ---------- search + filter, with the state kept in the URL ---------- */
 const searchEl = document.getElementById("search");
-searchEl.addEventListener("input", () => { QUERY = searchEl.value.trim().toLowerCase(); render(); });
-document.addEventListener("keydown", e => {
-  if (e.key === "/" && !ovl.classList.contains("on") && document.activeElement !== searchEl){
-    e.preventDefault(); searchEl.focus();
+const wrapEl   = document.getElementById("searchWrap");
+const clearEl  = document.getElementById("clear");
+
+function writeURL(){
+  const p = new URLSearchParams();
+  if (QUERY) p.set("q", QUERY);
+  if (FILTER !== "all") p.set("f", FILTER);
+  const qs = p.toString();
+  history.replaceState(null, "", location.pathname + (qs ? "?" + qs : "") + location.hash);
+}
+function readURL(){
+  const p = new URLSearchParams(location.search);
+  QUERY = (p.get("q") || "").trim().toLowerCase();
+  const f = p.get("f");
+  if (f === "oss" || f === "cloud") FILTER = f;
+  searchEl.value = p.get("q") || "";
+  paintFilter();
+  paintClear();
+}
+function paintFilter(){
+  document.querySelectorAll("#seg button").forEach(b => {
+    const on = b.dataset.f === FILTER;
+    b.setAttribute("aria-checked", String(on));
+    b.tabIndex = on ? 0 : -1;           // roving tabindex: one tab stop for the group
+  });
+}
+function paintClear(){ wrapEl.classList.toggle("has-value", !!searchEl.value); }
+
+let typing;
+searchEl.addEventListener("input", () => {
+  paintClear();
+  clearTimeout(typing);
+  typing = setTimeout(() => {          // was re-rendering 95 tiles on every keypress
+    QUERY = searchEl.value.trim().toLowerCase();
+    render(); writeURL();
+  }, 120);
+});
+searchEl.addEventListener("keydown", e => {
+  if (e.key === "Escape" && searchEl.value){
+    e.stopPropagation();               // do not let this reach the modal handler
+    resetSearch();
   }
 });
+function resetSearch(){
+  searchEl.value = ""; QUERY = ""; paintClear(); render(); writeURL();
+}
+clearEl.addEventListener("click", () => { resetSearch(); searchEl.focus(); });
 
-/* filter segments */
-document.getElementById("seg").addEventListener("click", e => {
-  const b = e.target.closest("button"); if (!b) return;
-  FILTER = b.dataset.f;
-  document.querySelectorAll("#seg button").forEach(x =>
-    x.setAttribute("aria-pressed", x === b ? "true" : "false"));
-  render();
+document.addEventListener("keydown", e => {
+  if (e.key !== "/" || ovl.classList.contains("on")) return;   // "/" used to fire behind the open modal
+  const a = document.activeElement;
+  if (a && (a.tagName === "INPUT" || a.tagName === "TEXTAREA" || a.isContentEditable)) return;
+  e.preventDefault(); searchEl.focus(); searchEl.select();
 });
 
-/* open-source alternatives modal */
+/* filter segments — a radio group, so it announces "2 of 3", not "not pressed" */
+const segEl = document.getElementById("seg");
+segEl.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  FILTER = b.dataset.f; paintFilter(); render(); writeURL();
+});
+segEl.addEventListener("keydown", e => {
+  const bs = [...segEl.querySelectorAll("button")];
+  const i = bs.indexOf(document.activeElement);
+  if (i < 0) return;
+  const d = {ArrowRight:1, ArrowDown:1, ArrowLeft:-1, ArrowUp:-1}[e.key];
+  if (!d) return;
+  e.preventDefault();
+  const n = bs[(i + d + bs.length) % bs.length];
+  n.focus(); n.click();
+});
+
+document.addEventListener("click", e => {
+  const r = e.target.closest("#reset"); if (!r) return;
+  FILTER = "all"; paintFilter(); resetSearch();
+});
+
+/* ---------- open-source alternatives modal ---------- */
 const ovl = document.getElementById("ovl"), sheet = document.getElementById("sheet");
-let lastFocus = null;
+const BACKDROP = [document.querySelector(".bar"), document.querySelector(".wrap"), document.getElementById("ladder")];
+let lastFocus = null, scrollLock = 0;
+const FOCUSABLE = 'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])';
 
 function openModal(t){
+  if (!t) return;
   const href = t.href || `https://${t.domain}`;
   sheet.innerHTML = `
-    <button class="x" aria-label="Close">✕</button>
+    <button class="x" type="button" aria-label="Close">✕</button>
     <div class="m-main">
       ${logoImg(t, "mlogo")}
-      <span class="mt"><b>${esc(t.name)}</b><span>${esc(t.use || "")}</span></span>
-      <a class="open" href="${esc(href)}" target="_blank" rel="noopener">Open site</a>
+      <span class="mt"><b id="sheetTitle">${esc(t.name)}</b><span>${esc(t.use || "")}</span></span>
+      <a class="open" href="${esc(href)}" target="_blank" rel="noopener">Open site<span class="vh"> (opens in a new tab)</span></a>
     </div>
     ${t.desc ? `<p class="m-desc">${esc(t.desc)}</p>` : ''}
     ${t.img ? `<img class="m-img" alt="" loading="lazy" src="${esc(t.img)}">` : ''}
@@ -430,19 +725,19 @@ function openModal(t){
     <a class="m-self" href="${esc(t.repo || href)}" target="_blank" rel="noopener">
       ${FORK}
       <span class="at"><b>This tool is open source</b><span>Self-host it free. View the code</span></span>
-      <span class="ar">→</span>
+      <span class="ar" aria-hidden="true">→</span>
     </a>`}
-    ${!(t.alts && t.alts.length) ? '' : `<div class="m-h">${FORK} ${t.oss ? 'More open-source options' : 'Open-source alternatives'}</div>` +
+    ${!(t.alts && t.alts.length) ? '' : `<h2 class="m-h">${FORK} ${t.oss ? 'More open-source options' : 'Open-source alternatives'}</h2>` +
     t.alts.map(a => {
       const hue = HUES[[...a.name].reduce((s,c)=>s+c.charCodeAt(0),0) % HUES.length];
       const srcs = [];
-      if (a.icon) srcs.push(`https://cdn.simpleicons.org/${a.icon}`);
+      if (a.icon) srcs.push({u:`https://cdn.simpleicons.org/${a.icon}`, min:0});
       else if (a.domain !== "github.com"){
-        srcs.push(`https://icons.duckduckgo.com/ip3/${a.domain}.ico`);
-        srcs.push(`https://www.google.com/s2/favicons?domain=${a.domain}&sz=128`);
+        srcs.push({u:`https://icons.duckduckgo.com/ip3/${a.domain}.ico`, min:32});
+        srcs.push({u:`https://www.google.com/s2/favicons?domain=${a.domain}&sz=128`, min:32});
       }
       const face = srcs.length
-        ? `<img class="mlogo" alt="" loading="lazy" src="${esc(srcs[0])}"
+        ? `<img class="alogo" alt="" loading="lazy" src="${esc(srcs[0].u)}"
              data-src='${esc(JSON.stringify(srcs))}' data-step="0"
              data-letter="${esc(a.name[0])}" data-hue="${hue}">`
         : `<span class="mono" style="background:hsl(${hue} 32% 46%)">${esc(a.name[0].toUpperCase())}</span>`;
@@ -450,64 +745,83 @@ function openModal(t){
       <a class="m-alt" href="https://${esc(a.domain)}" target="_blank" rel="noopener">
         ${face}
         <span class="at"><b>${esc(a.name)}</b><span>${esc(a.note || "")}</span></span>
-        <span class="ar">→</span>
+        <span class="ar" aria-hidden="true">→</span>
       </a>`;}).join("")}`;
 
-  ovl.classList.add("on");
-  document.body.style.overflow = "hidden";
-  ["bar","main","foot","ladder"].forEach(id => {
-    const el = document.getElementById(id) || document.querySelector("." + id);
-    if (el) el.setAttribute("inert", "");
-  });
   lastFocus = document.activeElement;
+  ovl.hidden = false;
+  ovl.classList.add("on");
+  // stop the page behind from scrolling and from being reachable by Tab or a screen reader
+  // overflow:hidden on <html> keeps the scroll position for free; the padding
+  // compensates for the scrollbar so the page behind does not jump sideways
+  const sb = innerWidth - document.documentElement.clientWidth;
+  scrollLock = scrollY;
+  if (sb > 0) document.body.style.paddingRight = sb + "px";
+  document.documentElement.classList.add("locked");
+  BACKDROP.forEach(el => el && (el.inert = true));
+  sheet.scrollTop = 0;
   sheet.querySelector(".x").focus();
 }
+
 function closeModal(){
-  if (!ovl.classList.contains("on")) return;
+  if (!ovl.classList.contains("on")) return;   // used to run on every stray Escape
   ovl.classList.remove("on");
-  document.body.style.overflow = "";
-  document.querySelectorAll("[inert]").forEach(el => el.removeAttribute("inert"));
-  if (lastFocus && lastFocus.isConnected) lastFocus.focus();
+  ovl.hidden = true;
+  document.documentElement.classList.remove("locked");
+  document.body.style.paddingRight = "";
+  BACKDROP.forEach(el => el && (el.inert = false));
+  restoreScroll();
+  // preventScroll matters: focus() would otherwise scroll the tile into view
+  // and undo the scroll position we just restored
+  if (lastFocus && document.contains(lastFocus)) lastFocus.focus({preventScroll:true});
   lastFocus = null;
 }
-/* keep Tab inside the open dialog */
+
+/* overflow:hidden clamps the document scroll to 0, so put it back — with smooth
+   scrolling temporarily off, and again on the next frame in case layout is late */
+function restoreScroll(){
+  const y = scrollLock, de = document.documentElement;
+  const prev = de.style.scrollBehavior;
+  de.style.scrollBehavior = "auto";
+  scrollTo(0, y);
+  requestAnimationFrame(() => { scrollTo(0, y); de.style.scrollBehavior = prev; });
+}
+
+/* Tab used to walk straight out of the dialog and into the page behind it */
 ovl.addEventListener("keydown", e => {
   if (e.key !== "Tab") return;
-  const f = [...sheet.querySelectorAll("a[href], button")];
+  const f = [...sheet.querySelectorAll(FOCUSABLE)].filter(el => el.offsetParent !== null);
   if (!f.length) return;
   const first = f[0], last = f[f.length - 1];
   if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
   else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
 });
+
 document.addEventListener("click", e => {
   const tileEl = e.target.closest("[data-info]");
   if (tileEl){
-    if (e.metaKey || e.ctrlKey || e.shiftKey) return;   // power users go straight through
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;   // power users go straight through
     e.preventDefault(); openModal(TOOLS[tileEl.dataset.info]); return;
   }
   if (e.target === ovl || e.target.closest(".x")) closeModal();
 });
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape" && ovl.classList.contains("on")) closeModal();
-});
-
-/* the sticky bar height varies with wrapping — keep anchor offsets honest */
-const barEl = document.querySelector(".bar");
-const syncScrollPad = () =>
-  document.documentElement.style.scrollPaddingTop = (barEl.offsetHeight + 10) + "px";
-new ResizeObserver(syncScrollPad).observe(barEl);
-syncScrollPad();
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
 
 /* boot: render the baked-in snapshot instantly, upgrade from data/ if present */
-CATS = SEED.categories || []; UPDATED = SEED.updated || "";
-render();
+function boot(cats, updated){
+  CATS = cats || []; UPDATED = updated || "";
+  TOTAL = CATS.reduce((n,c) => n + (c.tools ? c.tools.length : 0), 0);
+  render();
+}
+readURL();
+boot(SEED.categories, SEED.updated);
 (async () => {
   try{
     const idx = await (await fetch(`${DATA_BASE}/index.json`,{cache:"no-cache"})).json();
     const cats = await Promise.all(idx.categories.map(c =>
       fetch(`${DATA_BASE}/${c.slug}.json`,{cache:"no-cache"}).then(r => r.json())));
-    CATS = cats; UPDATED = idx.updated;
-    render();
+    imgSeen = 0;
+    boot(cats, idx.updated);
   }catch(err){ /* no data dir — the snapshot already rendered */ }
 })();
 </script>

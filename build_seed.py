@@ -51,7 +51,7 @@ main_html = "".join(
     f'<p class="kind">{e(c["kind"])}</p></div>'
     f'<div class="grid">{"".join(tile_html(t) for t in c["tools"])}</div></section>'
     for c in seed["categories"])
-new, count = re.subn(r'(<main id="main">).*?(</main>)',
+new, count = re.subn(r'(<div id="main">).*?(</div>\s*</main>)',
                      lambda m: m.group(1) + main_html + m.group(2), new, count=1, flags=re.S)
 if count != 1:
     sys.exit("main element not found")

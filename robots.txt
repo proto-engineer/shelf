@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://shelf.proto-engineer.com/sitemap.xml
+Sitemap: https://proto-engineer.github.io/shelf/sitemap.xml
