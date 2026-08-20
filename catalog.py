@@ -174,6 +174,7 @@ CATALOG = [
             {"name": "Instamojo", "domain": "instamojo.com", "free": False, "icon": "", "use": "Payment links for individuals"},
             {"name": "Lemon Squeezy", "domain": "lemonsqueezy.com", "free": False, "icon": "lemonsqueezy", "use": "Sell globally, no company needed"},
             {"name": "Stripe", "domain": "stripe.com", "free": False, "icon": "stripe", "use": "Global cards + subscriptions"},
+            {"name": "Skydo", "domain": "skydo.com", "free": False, "icon": "", "use": "Receive USD in India"},
         ],
     },
     {
@@ -280,6 +281,8 @@ CATALOG = [
             {"name": "Capacities", "domain": "capacities.io", "free": True, "icon": "", "use": "Notes as a knowledge graph",
              "href": "https://capacities.io/"},
             {"name": "Obsidian", "domain": "obsidian.md", "free": True, "icon": "obsidian", "use": "Local-first linked notes"},
+            {"name": "Vercel", "domain": "vercel.com", "free": True, "icon": "vercel", "use": "Deploy frontends in seconds"},
+            {"name": "Krutrim Cloud", "domain": "olakrutrim.com", "free": True, "icon": "", "use": "India's AI cloud"},
             {"name": "LaunchDarkly", "domain": "launchdarkly.com", "free": True, "icon": "", "use": "Feature flags",
              "alts": [("Unleash", "getunleash.io", "Open feature flags"), ("Flagsmith", "flagsmith.com", "Flags + remote config"), ("GrowthBook", "growthbook.io", "Flags + A/B tests")]},
         ],
@@ -409,6 +412,9 @@ DESCS = {
     'LaunchDarkly': 'Flip features on and off without redeploying.',
     'Coolify': 'Push your code to your own server with one click. A free Heroku you control.',
     'Uptime Kuma': 'A tidy dashboard that pings your site and rings you when it goes down.',
+    'Vercel': 'Push your code and it is live on a global CDN in seconds. Free for personal projects.',
+    'Krutrim Cloud': "Ola's AI cloud. Indian GPUs and model APIs, priced in rupees.",
+    'Skydo': 'Foreign clients pay you in dollars, you receive rupees at a flat fee with the FIRA paperwork handled.',
     'NocoDB': 'Point it at any database and get a friendly Airtable-style spreadsheet.',
     'Strapi': 'A clean admin panel for your website content. Open source.',
 }
