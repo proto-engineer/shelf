@@ -1,11 +1,13 @@
 """
 Seed catalogue.
 
-Each entry is (name, domain, free_tier, icon, use).
-- domain      -> the link, and the fallback logo lookup
+Each entry is (name, domain, free_tier, icon, use[, href]).
+- domain      -> the fallback link, and the logo lookup
 - free_tier   -> True if there's a usable free plan (not just a trial)
 - icon        -> Simple Icons slug for the real brand logo. "" = fall back.
 - use         -> one short line: what you'd actually use it for
+- href        -> optional deep link (program/application page). Public URLs
+                 only — never workspace pages or links with auth/tracking IDs.
 Order inside each category is free-first.
 """
 
@@ -101,22 +103,27 @@ CATALOG = [
         "name": "Startup programs",
         "kind": "Free credits and perks for founders",
         "tools": [
-            ("AWS Activate",         "aws.amazon.com",          True, "",            "AWS cloud credits"),
-            ("Google for Startups",  "cloud.google.com",        True, "googlecloud", "GCP credits + Workspace"),
-            ("NVIDIA Inception",     "nvidia.com",              True, "nvidia",      "GPU perks and training"),
-            ("MongoDB for Startups", "mongodb.com",             True, "mongodb",     "Atlas credits + advisor"),
-            ("Claude for Startups",  "anthropic.com",           True, "claude",      "Claude API credits"),
-            ("OpenAI Startups",      "openai.com",              True, "openai",      "Builder community + credits"),
-            ("ElevenLabs Grants",    "elevenlabs.io",           True, "elevenlabs",  "Voice API grant"),
-            ("Sentry for Startups",  "sentry.io",               True, "sentry",      "$5K monitoring credits"),
-            ("Cloudflare Startups",  "cloudflare.com",          True, "cloudflare",  "Product credits"),
-            ("GitLab for Startups",  "gitlab.com",              True, "gitlab",      "Free GitLab Ultimate"),
-            ("Retool for Startups",  "retool.com",              True, "",            "Internal-tool credits"),
-            ("Persona Startups",     "withpersona.com",         True, "",            "Free KYC tier"),
-            ("DocSend Startups",     "dropbox.com",             True, "dropbox",     "90% off deck sharing"),
-            ("Infobip Tribe",        "infobip.com",             True, "infobip",     "Messaging credits"),
-            ("Stripe Atlas",         "stripe.com",              False, "stripe",     "US inc + partner perks"),
-            ("Azure for Students",   "azure.microsoft.com",     True, "",            "$100 Azure credit"),
+            ("AWS Activate",         "aws.amazon.com",          True, "",            "AWS cloud credits",          "https://aws.amazon.com/startups"),
+            ("Google for Startups",  "cloud.google.com",        True, "googlecloud", "GCP credits + Workspace",    "https://cloud.google.com/startup/apply"),
+            ("NVIDIA Inception",     "nvidia.com",              True, "nvidia",      "Path to $100K AWS credits",  "https://www.nvidia.com/en-in/startups/"),
+            ("MongoDB for Startups", "mongodb.com",             True, "mongodb",     "Atlas credits + advisor",    "https://www.mongodb.com/startups"),
+            ("Claude for Startups",  "anthropic.com",           True, "claude",      "Claude API credits",         "https://www.anthropic.com/startups"),
+            ("OpenAI Startups",      "openai.com",              True, "openai",      "Builder community + credits","https://openai.com/startups"),
+            ("ElevenLabs Grants",    "elevenlabs.io",           True, "elevenlabs",  "Voice API grant",            "https://elevenlabs.io/startup-grants"),
+            ("Sentry for Startups",  "sentry.io",               True, "sentry",      "$5K monitoring credits",     "https://sentry.io/for/startups/"),
+            ("Cloudflare Startups",  "cloudflare.com",          True, "cloudflare",  "Product credits",            "https://www.cloudflare.com/forstartups/"),
+            ("GitLab for Startups",  "gitlab.com",              True, "gitlab",      "Free GitLab Ultimate",       "https://about.gitlab.com/solutions/startups/"),
+            ("Retool for Startups",  "retool.com",              True, "",            "Internal-tool credits",      "https://retool.com/startups"),
+            ("Persona Startups",     "withpersona.com",         True, "",            "KYC + KYB free tier",        "https://help.withpersona.com/articles/1XNnqukfZY9VamF2e7jkuJ/"),
+            ("Signzy Startups",      "signzy.com",              True, "",            "KYC + KYB APIs, India",      "https://www.signzy.com/fintech-apis/startups"),
+            ("AssemblyAI Startups",  "assemblyai.com",          True, "assemblyai",  "Speech-to-text credits",     "https://www.assemblyai.com/contact/startup-program"),
+            ("Arize for Startups",   "arize.com",               True, "",            "LLM observability + evals",  "https://arize.com/arize-for-startups/"),
+            ("Perplexity Startups",  "perplexity.ai",           True, "perplexity",  "API credits + Pro",          "https://www.perplexity.ai/startups"),
+            ("DocSend Startups",     "dropbox.com",             True, "dropbox",     "90% off deck sharing",       "https://experience.dropbox.com/docsend/startups"),
+            ("Infobip Tribe",        "infobip.com",             True, "infobip",     "Messaging credits",          "https://www.infobip.com/startup-tribe"),
+            ("Google Ads credit",    "ads.google.com",          True, "googleads",   "Ad credit after first spend","https://ads.google.com/aw/signup"),
+            ("Stripe Atlas",         "stripe.com",              False, "stripe",     "US inc + partner perks",     "https://stripe.com/atlas"),
+            ("Azure for Students",   "azure.microsoft.com",     True, "",            "$100 Azure credit",          "https://azure.microsoft.com/free/students"),
         ],
     },
     {
