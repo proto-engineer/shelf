@@ -9,7 +9,8 @@ Each tool is a dict:
 - use     -> one short line: what you'd actually use it for
 - href    -> optional deep link (program/application page). Public URLs only —
              never workspace pages or links with auth/tracking IDs.
-- oss     -> optional True when the tool itself is open source / open weights
+- oss     -> optional True when the tool itself is open source, open weights,
+             or source-available fair-code (n8n)
 - alts    -> optional list of open-source alternatives: (name, domain, note)
 
 Order inside each category is free-first.
