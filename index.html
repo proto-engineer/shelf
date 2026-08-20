@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Shelf: free AI tools, startup credits and builder stack</title>
-<meta name="description" content="A hand-picked shelf of AI tools, startup credits and builder services. Free tiers first, with an open-source alternative for every tool. By Proto.Engineer.">
+<title>Proto.Shelf — Free AI tools, startup credits, builder stack</title>
+<meta name="description" content="Hand-picked AI tools, startup credits and builder services across 12 categories. Free tiers first, open-source alternatives included. No signup, no paywall.">
 
 <!-- SITE_URL: the one place the public address of this site is declared.
      Change these four lines together if you move to a custom domain,
      and update robots.txt + sitemap.xml to match. -->
 <link rel="canonical" href="https://shelf.proto-engineer.com/">
-<meta name="robots" content="index,follow">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="Proto.Engineer">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Shelf">
-<meta property="og:title" content="Shelf: free AI tools, startup credits and builder stack">
-<meta property="og:description" content="Hand-picked AI tools, startup credits and builder services. Free tiers first, open-source alternatives included.">
+<meta property="og:site_name" content="Proto.Shelf">
+<meta property="og:title" content="Proto.Shelf — Free AI tools, startup credits, builder stack">
+<meta property="og:description" content="Hand-picked AI tools, startup credits and builder services across 12 categories. Free tiers first, open-source alternatives included. No signup, no paywall.">
 <meta property="og:url" content="https://shelf.proto-engineer.com/">
-<meta property="og:image" content="https://shelf.proto-engineer.com/assets/og-card.png">
+<meta property="og:locale" content="en_US">
+<!-- Filename is versioned on purpose: Slack, LinkedIn and WhatsApp
+     cache unfurls by URL. A new filename forces a fresh fetch. -->
+<meta property="og:image" content="https://shelf.proto-engineer.com/og-proto-shelf-v2.png">
+<meta property="og:image:secure_url" content="https://shelf.proto-engineer.com/og-proto-shelf-v2.png">
+<meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Shelf: free AI tools, startup credits and the builder stack.">
+<meta property="og:image:alt" content="Proto.Shelf — free AI tools, startup credits and open-source alternatives">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Shelf: free AI tools and startup credits">
-<meta name="twitter:description" content="Hand-picked AI tools, startup credits and builder services. Free tiers first, open-source alternatives included.">
-<meta name="twitter:image" content="https://shelf.proto-engineer.com/assets/og-card.png">
+<meta name="twitter:title" content="Proto.Shelf — Free AI tools, startup credits, builder stack">
+<meta name="twitter:description" content="Hand-picked AI tools, startup credits and builder services across 12 categories. Free tiers first, open-source alternatives included.">
+<meta name="twitter:image" content="https://shelf.proto-engineer.com/og-proto-shelf-v2.png">
+<meta name="twitter:image:alt" content="Proto.Shelf — free AI tools, startup credits and open-source alternatives">
 
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="alternate icon" href="assets/favicon.png" sizes="96x96">
@@ -32,7 +39,47 @@
 <meta name="color-scheme" content="light">
 
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","name":"Shelf","url":"https://shelf.proto-engineer.com/","description":"Hand-picked AI tools, startup credits and builder services. Free tiers first, open-source alternatives included.","publisher":{"@type":"Organization","name":"Proto.Engineer","url":"https://www.proto-engineer.com/"}}
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.proto-engineer.com/#organization",
+      "name": "Proto.Engineer",
+      "url": "https://www.proto-engineer.com/",
+      "description": "Engineering courses written the builder way — backend, systems and data, as articles or visual comics."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://shelf.proto-engineer.com/#website",
+      "name": "Proto.Shelf",
+      "alternateName": ["ProtoShelf", "Proto Shelf", "Shelf by Proto.Engineer"],
+      "url": "https://shelf.proto-engineer.com/",
+      "description": "Hand-picked AI tools, startup credits and builder services across 12 categories. Free tiers first.",
+      "inLanguage": "en",
+      "publisher": { "@id": "https://www.proto-engineer.com/#organization" }
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": "https://shelf.proto-engineer.com/#webpage",
+      "url": "https://shelf.proto-engineer.com/",
+      "name": "Proto.Shelf — Free AI tools, startup credits and the builder stack",
+      "isPartOf": { "@id": "https://shelf.proto-engineer.com/#website" },
+      "about": [
+        { "@type": "Thing", "name": "AI tools" },
+        { "@type": "Thing", "name": "Startup credits" },
+        { "@type": "Thing", "name": "Developer tools" },
+        { "@type": "Thing", "name": "Open-source alternatives" }
+      ],
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://shelf.proto-engineer.com/og-proto-shelf-v2.png",
+        "width": 1200,
+        "height": 630
+      }
+    }
+  ]
+}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -99,6 +146,7 @@
     display:flex;align-items:center;gap:14px;min-height:60px
   }
   .mark{font-family:var(--display);font-weight:700;font-size:1.15rem;letter-spacing:-.03em;flex:none}
+  .mark-dot{color:var(--free)}
   .seg{display:flex;flex:none;gap:2px;background:rgba(28,23,18,.06);border-radius:999px;padding:3px}
   .seg button{
     border:0;background:transparent;cursor:pointer;font-family:var(--ui);
@@ -375,7 +423,7 @@
 
 <header class="bar">
   <div class="bar-in">
-    <span class="mark">Shelf</span>
+    <span class="mark">Proto<span class="mark-dot">.</span>Shelf</span>
     <div class="seg" id="seg" role="radiogroup" aria-label="Filter by licence">
       <button type="button" role="radio" aria-checked="true"  data-f="all">All</button>
       <button type="button" role="radio" aria-checked="false" data-f="oss">Open source</button>
@@ -397,11 +445,11 @@
 
 <div class="wrap">
  <main id="mainLand">
-  <h1 class="vh">Shelf: free AI tools, startup credits and the builder stack</h1>
+  <h1 class="vh">Proto.Shelf — free AI tools, startup credits and the builder stack</h1>
   <div class="hero">
     <a href="https://www.proto-engineer.com/" target="_blank" rel="noopener">
       <img alt="" src="assets/proto-engineer.png" width="42" height="42" decoding="async">
-      <span class="t"><b>Proto.Engineer</b><span>Our home. Learn engineering the builder way</span></span>
+      <span class="t"><b>by Proto.Engineer</b><span>Our home. Learn engineering the builder way</span></span>
       <span class="go">Visit <span aria-hidden="true">→</span></span>
     </a>
   </div>
@@ -559,7 +607,7 @@ function render(){
   const t = UPDATED || "";
   document.getElementById("foot").innerHTML =
     `<span>${TOTAL} tools · updated ${t ? `<time datetime="${esc(t)}">${esc(fmtDate(t))}</time>` : ""}</span>` +
-    `<a href="https://www.proto-engineer.com/" target="_blank" rel="noopener">A Proto.Engineer project</a>` +
+    `<a href="https://www.proto-engineer.com/" target="_blank" rel="noopener">Proto.Shelf — part of Proto.Engineer</a>` +
     `<a href="https://logo.dev" target="_blank" rel="noopener">Logos provided by Logo.dev</a>`;
 
   announce(shown, cats.length);

@@ -1,8 +1,8 @@
-# ProtoShelf
+# Proto.Shelf
 
 A hand-picked shelf of AI tools, startup credits and builder services. Free tiers first,
-with an open-source alternative for every tool. Live at https://proto-engineer.github.io/shelf/
-(moving to https://shelf.proto-engineer.com/).
+with an open-source alternative for every tool. Live at https://shelf.proto-engineer.com/
+
 
 ## Files
 
