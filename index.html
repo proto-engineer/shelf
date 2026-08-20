@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shelf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F1F2F4;
+    --tile:#FFFFFF;
+    --ink:#0E1013;
+    --muted:#868D96;
+    --line:#E3E6EA;
+    --free:#3F7A5C;
+    --display:"Bricolage Grotesque",system-ui,sans-serif;
+    --ui:"Inter",system-ui,sans-serif;
+    --r:18px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:76px}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+  a{text-decoration:none;color:inherit}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:0 22px}
+
+  /* top bar */
+  .bar{
+    position:sticky;top:0;z-index:20;
+    background:rgba(241,242,244,.82);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line)
+  }
+  .bar-in{
+    max-width:1100px;margin:0 auto;padding:0 22px;
+    display:flex;align-items:center;gap:26px;height:60px
+  }
+  .mark{font-family:var(--display);font-weight:700;font-size:1.15rem;letter-spacing:-.03em;flex:none}
+  .chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-left:auto}
+  .chips::-webkit-scrollbar{display:none}
+  .chips a{
+    flex:none;font-size:.78rem;font-weight:500;color:var(--muted);
+    padding:6px 12px;border-radius:999px;white-space:nowrap;transition:.18s
+  }
+  .chips a:hover{color:var(--ink);background:rgba(14,16,19,.05)}
+  .chips a[aria-current="true"]{color:var(--ink);background:rgba(14,16,19,.07)}
+
+  /* category */
+  section{padding:52px 0 4px}
+  .head{margin-bottom:20px}
+  .head-top{display:flex;align-items:baseline;gap:14px}
+  .head h2{
+    font-family:var(--display);font-weight:700;
+    font-size:clamp(1.6rem,4vw,2.15rem);letter-spacing:-.035em;margin:0;line-height:1
+  }
+  .head .rule{flex:1;height:1px;background:var(--line)}
+  .head .n{font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
+  .kind{margin:8px 0 0;font-size:.87rem;color:var(--muted);font-weight:400}
+
+  /* grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px}
+  .tile{
+    position:relative;background:var(--tile);border:1px solid var(--line);
+    border-radius:var(--r);padding:22px 14px 16px;
+    display:flex;flex-direction:column;align-items:center;gap:13px;
+    transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s,border-color .22s
+  }
+  .tile:hover,.tile:focus-visible{
+    transform:translateY(-3px);border-color:#D5D9DF;
+    box-shadow:0 10px 26px -14px rgba(14,16,19,.28)
+  }
+  .logo{
+    width:44px;height:44px;object-fit:contain;display:block;
+    transition:transform .22s cubic-bezier(.2,.7,.3,1)
+  }
+  .tile:hover .logo{transform:scale(1.06)}
+  .mono{
+    width:46px;height:46px;border-radius:11px;display:grid;place-items:center;
+    font-family:var(--display);font-weight:700;font-size:1.25rem;color:#fff
+  }
+  .nm{font-size:.83rem;font-weight:500;letter-spacing:-.01em;text-align:center;line-height:1.25}
+  .free{
+    position:absolute;top:10px;right:11px;
+    font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--free);opacity:.72
+  }
+
+  footer{
+    padding:64px 0 40px;font-size:.72rem;color:var(--muted);
+    display:flex;gap:16px;flex-wrap:wrap
+  }
+  footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line)}
+  footer a:hover{color:var(--ink)}
+
+  @media (max-width:640px){
+    .grid{grid-template-columns:repeat(auto-fill,minmax(102px,1fr));gap:9px}
+    .tile{padding:17px 8px 13px;gap:10px;border-radius:15px}
+    .logo,.mono{width:36px;height:36px;border-radius:9px}
+    .nm{font-size:.73rem}
+    section{padding:38px 0 4px}
+    .bar-in{gap:14px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .tile,.logo{transition:none}
+    .tile:hover{transform:none}
+  }
+  :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <span class="mark">Shelf</span>
+    <nav class="chips" id="chips" aria-label="Categories"></nav>
+  </div>
+</div>
+
+<div class="wrap"><main id="main"></main>
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const SEED = {"updated":"2026-08-20","categories":[{"slug":"assistants","name":"Assistants","kind":"Ask anything, get answers","tools":[{"name":"ChatGPT","domain":"chatgpt.com","free":true,"icon":"openai"},{"name":"Claude","domain":"claude.ai","free":true,"icon":"claude"},{"name":"Gemini","domain":"gemini.google.com","free":true,"icon":"googlegemini"},{"name":"DeepSeek","domain":"deepseek.com","free":true,"icon":"deepseek"},{"name":"Perplexity","domain":"perplexity.ai","free":true,"icon":"perplexity"},{"name":"Grok","domain":"grok.com","free":true,"icon":"grok"},{"name":"Mistral","domain":"mistral.ai","free":true,"icon":"mistralai"}]},{"slug":"coding","name":"Coding","kind":"Write and fix code","tools":[{"name":"Cline","domain":"cline.bot","free":true,"icon":""},{"name":"Copilot","domain":"github.com","free":true,"icon":"githubcopilot"},{"name":"Windsurf","domain":"windsurf.com","free":true,"icon":""},{"name":"Cursor","domain":"cursor.com","free":true,"icon":""},{"name":"Bolt","domain":"bolt.new","free":true,"icon":""},{"name":"Lovable","domain":"lovable.dev","free":true,"icon":""},{"name":"v0","domain":"v0.app","free":true,"icon":"vercel"},{"name":"Claude Code","domain":"claude.com","free":false,"icon":"claude"}]},{"slug":"video","name":"Video & image","kind":"Make pictures and videos","tools":[{"name":"Krea","domain":"krea.ai","free":true,"icon":""},{"name":"Leonardo","domain":"leonardo.ai","free":true,"icon":""},{"name":"Kling","domain":"klingai.com","free":true,"icon":""},{"name":"Freepik","domain":"freepik.com","free":true,"icon":"freepik"},{"name":"Runway","domain":"runwayml.com","free":true,"icon":""},{"name":"Flow","domain":"labs.google","free":false,"icon":""},{"name":"Midjourney","domain":"midjourney.com","free":false,"icon":"midjourney"}]},{"slug":"voice","name":"Voice & audio","kind":"Make speech and music","tools":[{"name":"ElevenLabs","domain":"elevenlabs.io","free":true,"icon":"elevenlabs"},{"name":"Deepgram","domain":"deepgram.com","free":true,"icon":""},{"name":"Suno","domain":"suno.com","free":true,"icon":""},{"name":"Murf","domain":"murf.ai","free":true,"icon":""},{"name":"Cartesia","domain":"cartesia.ai","free":true,"icon":""},{"name":"PlayHT","domain":"play.ht","free":true,"icon":""}]},{"slug":"identity","name":"Identity & KYC","kind":"Check someone is a real person","tools":[{"name":"Didit","domain":"didit.me","free":true,"icon":""},{"name":"Persona","domain":"withpersona.com","free":true,"icon":""},{"name":"HyperVerge","domain":"hyperverge.co","free":false,"icon":""},{"name":"IDfy","domain":"idfy.com","free":false,"icon":""},{"name":"Signzy","domain":"signzy.com","free":false,"icon":""},{"name":"Sumsub","domain":"sumsub.com","free":false,"icon":""},{"name":"Onfido","domain":"onfido.com","free":false,"icon":""},{"name":"Veriff","domain":"veriff.com","free":false,"icon":""}]},{"slug":"otp","name":"OTP & messaging","kind":"Send OTP codes and SMS","tools":[{"name":"Firebase Auth","domain":"firebase.google.com","free":true,"icon":"firebase"},{"name":"Fast2SMS","domain":"fast2sms.com","free":true,"icon":""},{"name":"2Factor","domain":"2factor.in","free":true,"icon":""},{"name":"MSG91","domain":"msg91.com","free":false,"icon":""},{"name":"Plivo","domain":"plivo.com","free":false,"icon":""},{"name":"Twilio","domain":"twilio.com","free":false,"icon":"twilio"},{"name":"Vonage","domain":"vonage.com","free":false,"icon":"vonage"},{"name":"Infobip","domain":"infobip.com","free":false,"icon":"infobip"}]}]};
+const DATA_BASE = "./data";   // swap for your bucket URL on deploy
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const HUES = [212, 258, 340, 18, 150, 42];
+
+// Paste your publishable key from logo.dev (starts with pk_).
+// It is meant to be public, but lock it to your domain in the logo.dev dashboard.
+// Leave "" and the page still works, just with rougher icons.
+const LOGO_DEV_KEY = "";
+
+// Real brand logos, best source first:
+//  1. logo.dev      — the real company logo, fetched live by domain
+//  2. Simple Icons  — official brand SVG, free, no key
+//  3. site icon     — the company's own icon
+//  4. letter tile   — last resort only
+function sources(t){
+  const s = [];
+  if (LOGO_DEV_KEY) s.push(`https://img.logo.dev/${t.domain}?token=${LOGO_DEV_KEY}&size=128&format=png&retina=true`);
+  if (t.icon)       s.push(`https://cdn.simpleicons.org/${t.icon}`);
+  s.push(`https://icons.duckduckgo.com/ip3/${t.domain}.ico`);
+  s.push(`https://www.google.com/s2/favicons?domain=${t.domain}&sz=128`);
+  return s;
+}
+
+function tile(t){
+  const hue = HUES[[...t.name].reduce((a,c)=>a+c.charCodeAt(0),0) % HUES.length];
+  const src = sources(t);
+  return `<a class="tile" href="https://${esc(t.domain)}" target="_blank" rel="noopener">
+    ${t.free ? '<span class="free">free</span>' : ''}
+    <img class="logo" alt="" loading="lazy" src="${esc(src[0])}"
+         data-src='${esc(JSON.stringify(src))}' data-step="0"
+         data-letter="${esc(t.name[0])}" data-hue="${hue}">
+    <span class="nm">${esc(t.name)}</span>
+  </a>`;
+}
+
+// walk the source list on failure, letter tile only if every source misses
+document.addEventListener("error", e => {
+  const img = e.target;
+  if (!img.classList || !img.classList.contains("logo")) return;
+  const list = JSON.parse(img.dataset.src);
+  const next = +img.dataset.step + 1;
+  if (next < list.length){
+    img.dataset.step = next;
+    img.src = list[next];
+  } else {
+    const d = document.createElement("div");
+    d.className = "mono";
+    d.textContent = img.dataset.letter.toUpperCase();
+    d.style.background = `hsl(${img.dataset.hue} 46% 52%)`;
+    img.replaceWith(d);
+  }
+}, true);
+
+function render(cats, updated){
+  document.getElementById("main").innerHTML = cats.map(c => `
+    <section id="${esc(c.slug)}">
+      <div class="head">
+        <div class="head-top">
+          <h2>${esc(c.name)}</h2>
+          <span class="rule"></span>
+          <span class="n">${c.tools.length}</span>
+        </div>
+        <p class="kind">${esc(c.kind || "")}</p>
+      </div>
+      <div class="grid">${c.tools.map(tile).join("")}</div>
+    </section>`).join("");
+
+  document.getElementById("chips").innerHTML =
+    cats.map(c => `<a href="#${esc(c.slug)}">${esc(c.name)}</a>`).join("");
+
+  document.getElementById("foot").innerHTML =
+    `<span>Updated ${esc(updated || "—")}</span>` +
+    `<a href="https://logo.dev" target="_blank" rel="noopener">Logos provided by Logo.dev</a>`;
+
+  const links = [...document.querySelectorAll(".chips a")];
+  const spy = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) links.forEach(l =>
+      l.setAttribute("aria-current", l.getAttribute("href") === "#" + e.target.id));
+  }), {rootMargin:"-15% 0px -70% 0px"});
+  document.querySelectorAll("section").forEach(s => spy.observe(s));
+}
+
+(async () => {
+  try{
+    const idx = await (await fetch(`${DATA_BASE}/index.json`,{cache:"no-cache"})).json();
+    const cats = await Promise.all(idx.categories.map(c =>
+      fetch(`${DATA_BASE}/${c.slug}.json`,{cache:"no-cache"}).then(r => r.json())));
+    render(cats, idx.updated);
+  }catch(err){
+    if (SEED) render(SEED.categories, SEED.updated);
+  }
+})();
+</script>
+</body>
+</html>
