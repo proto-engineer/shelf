@@ -446,3 +446,26 @@ DESCS = {
     'Postiz': 'Schedule posts to every social network from one screen. Open source.',
     'Product Hunt': 'Where new products launch every day. Watch what ships, then launch yours.',
 }
+
+# One featured product, shown as a band at the top of the page and added to the
+# page's JSON-LD @graph as a SoftwareApplication. build_seed.py renders both.
+# Keep the copy plain: no contractions, no semicolons, real facts only.
+FEATURED = {
+    "id": "protolift",
+    "name": "protolift",
+    "by": "Proto.Engineer",
+    "license": "Apache-2.0",
+    "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
+    "line": "Run your whole dev stack in your own AWS or Google Cloud account, "
+            "and use it on localhost as if it ran on your laptop.",
+    "points": [
+        "About 0.2 seconds from save to page updated",
+        "Budgets stop the box even with the laptop closed",
+        "Works with AI coding tools (MCP)",
+    ],
+    "cta": "Get protolift free",
+    "href": "https://www.proto-engineer.com/protolift",
+    "cta_note": "Sign in on Proto.Engineer to get it",
+    "repo_label": "Source on GitHub",
+    "repo": "https://github.com/Prabhudas111/protolift",
+}
