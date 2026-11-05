@@ -6,6 +6,19 @@ Format: newest entries at top. Never delete entries — if superseded, add a new
 
 ---
 
+## [2026-11-05 21:20] keep wiring.md off the site
+
+**Symptom:** The next deploy would publish this change log at /wiring.md.
+**Root cause:** Hosting serves the repo folder and hides files by the ignore list in firebase.json. wiring.md came later than the list.
+**Fix:** Added wiring.md to the ignore list.
+**Files touched:** `firebase.json:12`
+**Wiring mapped:** only `firebase deploy --only hosting:shelf` reads firebase.json. index.html never links to wiring.md.
+**Blast radius:** 1 file, low.
+**Tests run:** `python3 -m json.tool firebase.json` → valid.
+**Regression risks:** any new repo-only file at the root must join this ignore list too, or it goes live.
+
+---
+
 ## [2026-11-05 21:00] Featured protolift band at top — this commit
 
 **Symptom:** The founder asked for one featured component at the top of Proto.Shelf, protolift. The page had no way to feature a single product above the category list.
