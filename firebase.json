@@ -9,6 +9,7 @@
       "catalog.py",
       "build_seed.py",
       "README.md",
+      "wiring.md",
       "**/.git/**",
       "**/__pycache__/**"
     ],
